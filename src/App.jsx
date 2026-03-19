@@ -1,4 +1,5 @@
-import DreamAnalyzer from "./DreamAnalyzer";
+import DreamAnalyzer from "./component/DreamAnalyzer.jsx";
+
 
 
 function App() {
