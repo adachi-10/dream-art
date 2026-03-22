@@ -27,10 +27,6 @@ export default function Layout({ children }) {
         {children}
       </main>
 
-      {/* フッター */}
-      <footer className="footer">
-        <p>© 2025 DreamArt — ゆめをアートで可視化する</p>
-      </footer>
 
     </div>
   );
