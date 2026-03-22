@@ -1,0 +1,532 @@
+/* ---------- CSS変数 ---------- */
+:root {
+  --da-grad-start:     #b8c8f0;   /* 青紫 */
+  --da-grad-mid:       #c8aee8;   /* 薄紫 */
+  --da-grad-end:       #f0b8d8;   /* ピンク */
+
+  --da-card-bg:        rgba(255, 255, 255, 0.28);
+  --da-card-border:    rgba(255, 255, 255, 0.55);
+  --da-card-shadow:    0 4px 24px rgba(160, 130, 210, 0.18);
+
+  --da-text-main:      #3a2a5a;   /* 濃い紫 */
+  --da-text-sub:       #6a5a8a;   /* 中間紫 */
+  --da-text-muted:     rgba(90, 70, 130, 0.55);
+  --da-text-on-btn:    #fff;
+
+  --da-btn-bg:         rgba(255, 255, 255, 0.55);
+  --da-btn-border:     rgba(255, 255, 255, 0.8);
+  --da-btn-hover:      rgba(255, 255, 255, 0.78);
+  --da-btn-primary-bg: rgba(160, 120, 220, 0.75);
+  --da-btn-primary-hv: rgba(160, 120, 220, 0.92);
+
+  --da-input-bg:       rgba(255, 255, 255, 0.22);
+  --da-input-border:   rgba(255, 255, 255, 0.5);
+  --da-input-focus:    rgba(255, 255, 255, 0.85);
+
+  --da-error-bg:       rgba(255, 160, 180, 0.22);
+  --da-error-border:   rgba(240, 100, 130, 0.4);
+  --da-error-text:     #a03060;
+
+  --da-radius-sm:      10px;
+  --da-radius-md:      16px;
+  --da-radius-lg:      22px;
+  --da-radius-pill:    999px;
+
+  --da-font-body:      'Hiragino Kaku Gothic ProN', 'DM Sans', sans-serif;
+  --da-font-mono:      'DM Mono', 'Courier New', monospace;
+  --da-ease:           0.2s ease;
+}
+
+/* ============================================
+   1. 外側ラッパー
+   ============================================ */
+.dream-analyzer {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 16px 48px;
+}
+
+/* ============================================
+   2. 入力フォームカード
+   ============================================ */
+.dream-form {
+  background: var(--da-card-bg);
+  border: 1px solid var(--da-card-border);
+  border-radius: var(--da-radius-lg);
+  padding: 22px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--da-card-shadow);
+  transition: box-shadow var(--da-ease);
+}
+
+.dream-form:focus-within {
+  box-shadow: 0 6px 32px rgba(160, 130, 210, 0.28);
+}
+
+/* ラベル */
+.dream-form__label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--da-text-muted);
+  font-family: var(--da-font-body);
+  margin-bottom: 10px;
+}
+
+/* テキストエリア */
+.dream-form__textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  background: var(--da-input-bg);
+  border: 1px solid var(--da-input-border);
+  border-radius: var(--da-radius-md);
+  color: var(--da-text-main);
+  font-family: var(--da-font-body);
+  font-size: 14px;
+  line-height: 1.85;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--da-ease), background var(--da-ease);
+  caret-color: #a078dc;
+}
+
+.dream-form__textarea::placeholder {
+  color: var(--da-text-muted);
+  font-style: italic;
+}
+
+.dream-form__textarea:focus {
+  border-color: var(--da-input-focus);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* フォームフッター（文字数 + ボタン） */
+.dream-form__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dream-form__char-count {
+  font-size: 11px;
+  color: var(--da-text-muted);
+  font-family: var(--da-font-mono);
+}
+
+/* ============================================
+   3. 送信ボタン
+   ============================================ */
+.dream-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 26px;
+  background: var(--da-btn-primary-bg);
+  color: var(--da-text-on-btn);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--da-radius-pill);
+  font-family: var(--da-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--da-ease), transform var(--da-ease),
+              box-shadow var(--da-ease), opacity var(--da-ease);
+  backdrop-filter: blur(6px);
+  letter-spacing: 0.03em;
+}
+
+.dream-submit-btn:hover:not(:disabled) {
+  background: var(--da-btn-primary-hv);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(160, 120, 220, 0.35);
+}
+
+.dream-submit-btn:active:not(:disabled) {
+  transform: scale(0.97) translateY(0);
+  box-shadow: none;
+}
+
+.dream-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================
+   4. ローディング表示
+   ============================================ */
+.dream-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  gap: 18px;
+}
+
+/* 「分析中...」テキスト */
+.dream-loading__message {
+  font-size: 14px;
+  color: var(--da-text-sub);
+  font-family: var(--da-font-body);
+  letter-spacing: 0.08em;
+  animation: daTextPulse 1.8s ease-in-out infinite;
+}
+
+/* ドット3つのインジケーター */
+.dream-loading__dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dream-loading__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--da-grad-start), var(--da-grad-end));
+  animation: daDotBounce 1.2s ease-in-out infinite;
+}
+
+.dream-loading__dot:nth-child(2) { animation-delay: 0.18s; }
+.dream-loading__dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes daDotBounce {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40%           { transform: scale(1.2); opacity: 1;   }
+}
+
+@keyframes daTextPulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1;   }
+}
+
+/* ============================================
+   5. エラーメッセージ
+   ============================================ */
+.dream-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px 16px;
+  background: var(--da-error-bg);
+  border: 1px solid var(--da-error-border);
+  border-radius: var(--da-radius-md);
+  backdrop-filter: blur(8px);
+  animation: daFadeUp 0.3s ease forwards;
+}
+
+.dream-error__text {
+  font-size: 13px;
+  color: var(--da-error-text);
+  line-height: 1.6;
+  font-family: var(--da-font-body);
+}
+
+/* ============================================
+   6. 抽出された核心語バッジ
+   （「集団」「迷路」「生」のような丸ボタン）
+   ============================================ */
+.dream-words {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 18px 16px;
+}
+
+.dream-words__label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--da-text-muted);
+  font-family: var(--da-font-body);
+  width: 100%;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.dream-words__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 22px;
+  border-radius: var(--da-radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--da-font-body);
+  color: var(--da-text-main);
+  background: var(--da-btn-bg);
+  border: 1px solid var(--da-btn-border);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform var(--da-ease), box-shadow var(--da-ease),
+              background var(--da-ease);
+  letter-spacing: 0.04em;
+}
+
+.dream-words__chip:hover {
+  transform: translateY(-2px);
+  background: var(--da-btn-hover);
+  box-shadow: 0 4px 14px rgba(160, 130, 210, 0.22);
+}
+
+.dream-words__chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dream-words__operator {
+  font-size: 15px;
+  color: var(--da-text-muted);
+  font-weight: 300;
+}
+
+/* ============================================
+   7. AI読解・インサイト
+   ============================================ */
+.dream-reading {
+  background: var(--da-card-bg);
+  border: 1px solid var(--da-card-border);
+  border-radius: var(--da-radius-lg);
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--da-card-shadow);
+}
+
+.dream-reading__label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9070c0;
+  font-family: var(--da-font-mono);
+  margin-bottom: 10px;
+}
+
+.dream-reading__text {
+  font-size: 14px;
+  color: var(--da-text-main);
+  line-height: 1.9;
+  font-family: var(--da-font-body);
+}
+
+.dream-reading__question {
+  font-size: 13px;
+  color: var(--da-text-sub);
+  line-height: 1.75;
+  font-style: italic;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dream-insight {
+  padding: 16px 18px;
+  border-left: 2px solid rgba(160, 120, 210, 0.6);
+  border-radius: 0 var(--da-radius-md) var(--da-radius-md) 0;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.dream-insight__text {
+  font-size: 13px;
+  color: var(--da-text-sub);
+  line-height: 1.85;
+}
+
+/* ============================================
+   8. ログ・履歴リスト
+   ============================================ */
+.dream-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dream-log__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.dream-log__title {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--da-text-muted);
+  font-family: var(--da-font-body);
+}
+
+.dream-log__clear-btn {
+  font-size: 11px;
+  color: var(--da-error-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity var(--da-ease);
+  font-family: var(--da-font-body);
+  padding: 2px 4px;
+}
+
+.dream-log__clear-btn:hover { opacity: 1; }
+
+.dream-log__card {
+  background: var(--da-card-bg);
+  border: 1px solid var(--da-card-border);
+  border-radius: var(--da-radius-lg);
+  padding: 14px 18px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--da-card-shadow);
+  transition: transform var(--da-ease), box-shadow var(--da-ease);
+}
+
+.dream-log__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(160, 130, 210, 0.22);
+}
+
+.dream-log__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dream-log__date {
+  font-size: 10px;
+  color: var(--da-text-muted);
+  font-family: var(--da-font-mono);
+}
+
+.dream-log__chips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.dream-log__chip {
+  padding: 2px 10px;
+  border-radius: var(--da-radius-pill);
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  color: var(--da-text-main);
+  font-family: var(--da-font-body);
+}
+
+.dream-log__excerpt {
+  font-size: 12px;
+  color: var(--da-text-sub);
+  line-height: 1.65;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.dream-log__empty {
+  font-size: 13px;
+  color: var(--da-text-muted);
+  text-align: center;
+  padding: 20px 0;
+  font-family: var(--da-font-body);
+}
+
+/* ============================================
+   9. アクションボタン行
+   ============================================ */
+.dream-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.dream-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: var(--da-radius-pill);
+  font-family: var(--da-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--da-ease);
+  background: var(--da-btn-bg);
+  border: 1px solid var(--da-btn-border);
+  color: var(--da-text-main);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.02em;
+}
+
+.dream-btn:hover {
+  background: var(--da-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(160, 130, 210, 0.2);
+}
+
+.dream-btn--primary {
+  background: var(--da-btn-primary-bg);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.dream-btn--primary:hover {
+  background: var(--da-btn-primary-hv);
+}
+
+/* ============================================
+   10. アニメーション
+   ============================================ */
+@keyframes daFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.da-fade-up {
+  animation: daFadeUp 0.5s ease forwards;
+}
+
+.da-fade-up--d1 { animation-delay: 0.07s; opacity: 0; }
+.da-fade-up--d2 { animation-delay: 0.14s; opacity: 0; }
+.da-fade-up--d3 { animation-delay: 0.21s; opacity: 0; }
+
+/* ============================================
+   11. レスポンシブ
+   ============================================ */
+@media (max-width: 480px) {
+  .dream-form { padding: 18px 16px; }
+
+  .dream-form__footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .dream-submit-btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .dream-actions { flex-direction: column; }
+
+  .dream-btn { width: 100%; justify-content: center; }
+}
+
