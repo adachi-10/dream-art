@@ -1,5 +1,5 @@
 
-
+import "../styles/DreamAnalyzer.css";
 import { useState } from "react";
 
 export default function DreamAnalyzer() {
