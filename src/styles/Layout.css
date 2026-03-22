@@ -1,0 +1,48 @@
+/* ============================================
+   Layout.css
+   担当範囲: 背景・タイトル・全体レイアウト
+   ============================================ */
+ 
+/* 背景グラデーション */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(
+    160deg,
+    #b8d4f5 0%,
+    #c8aee8 40%,
+    #e8a8d8 70%,
+    #f0b8c8 100%
+  );
+  background-attachment: fixed;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+}
+ 
+/* ページ全体のラッパー */
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+ 
+/* タイトル h1 */
+.hero {
+  width: 100%;
+  text-align: center;
+  padding: 32px 20px 24px;
+}
+ 
+.hero h1 {
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  margin: 0;
+  text-shadow:
+    0 2px 12px rgba(140, 100, 200, 0.35),
+    0 1px 3px rgba(100, 60, 160, 0.2);
+}
