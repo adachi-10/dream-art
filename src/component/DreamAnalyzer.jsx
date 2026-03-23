@@ -9,6 +9,7 @@ export default function DreamAnalyzer() {
   const [history, setHistory] = useState([]);
 
 
+
   const analyzeDream = async () => {
     setLoading(true);
     setResult(null);
@@ -22,6 +23,8 @@ export default function DreamAnalyzer() {
     const data = await response.json();
     setResult(data);
     setLoading(false);
+
+    
 
 // ★ ここでログに追加
     setHistory((prev) => [
