@@ -20,9 +20,33 @@ export default function Layout({ children }) {
         <p className="hero__sub">
           夢の断片をことばにして、AIがあなたの内側にある感情を3Dアートに変換します
         </p>
+
+<div
+  style={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px"
+  }}
+>
+  <img
+    src="/アイコン.png"
+    alt=""
+    style={{
+      width: "180px",
+      opacity: 0.95
+    }}
+  />
+</div>
+
+
+        
       </header>
 
       {/* メインコンテンツ（DreamAnalyzerなどが入る） */}
+
+
+
       <main className="main">
         {children}
       </main>
