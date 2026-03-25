@@ -12,6 +12,7 @@
    ============================================ */
  
 /* ---------- CSS変数 ---------- */
+
 :root {
   --da-text-main:      #3a2a5a;
   --da-text-sub:       #6a5a8a;
@@ -29,11 +30,11 @@
   --da-font:           'Hiragino Kaku Gothic ProN', 'DM Sans', sans-serif;
   --da-ease:           0.2s ease;
 }
- 
+
 /* ============================================
-   1. 外側ラッパー .analyzer
+   メインコンテナ
    ============================================ */
-.analyzer {
+.dream-analyzer-container {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
@@ -43,11 +44,24 @@
   gap: 16px;
   font-family: var(--da-font);
 }
- 
+
 /* ============================================
-   2. テキストエリア textarea
+   ヘッダー
    ============================================ */
-.analyzer textarea {
+.header {
+  display: none;
+}
+
+/* ============================================
+   入力セクション
+   ============================================ */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dream-input {
   width: 100%;
   min-height: 130px;
   padding: 16px 18px;
@@ -65,22 +79,33 @@
   transition: border-color var(--da-ease), background var(--da-ease);
   box-sizing: border-box;
 }
- 
-.analyzer textarea::placeholder {
+
+.dream-input::placeholder {
   color: var(--da-text-muted);
   font-style: italic;
 }
- 
-.analyzer textarea:focus {
+
+.dream-input:focus {
   border-color: rgba(255, 255, 255, 0.85);
   background: rgba(255, 255, 255, 0.35);
 }
- 
+
+.dream-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* ============================================
-   3. 送信ボタン button
+   ボタングループ
    ============================================ */
-.analyzer button {
-  align-self: flex-end;
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.analyze-btn,
+.clear-btn {
   padding: 11px 30px;
   background: var(--da-btn-bg);
   color: #fff;
@@ -94,23 +119,55 @@
   backdrop-filter: blur(6px);
   transition: background var(--da-ease), transform var(--da-ease),
               box-shadow var(--da-ease);
+  box-sizing: border-box;
 }
- 
-.analyzer button:hover {
+
+.analyze-btn:hover:not(:disabled) {
   background: var(--da-btn-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(160, 120, 220, 0.35);
 }
- 
-.analyzer button:active {
+
+.analyze-btn:active:not(:disabled) {
   transform: scale(0.97);
   box-shadow: none;
 }
- 
+
+.clear-btn {
+  padding: 11px 20px;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: var(--da-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(160, 120, 220, 0.35);
+}
+
+.analyze-btn:disabled,
+.clear-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ============================================
-   4. ローディング「分析中...」 p（直下）
+   エラーボックス
    ============================================ */
-.analyzer > p {
+.error-box {
+  background: rgba(255, 200, 200, 0.25);
+  border: 1px solid rgba(255, 100, 100, 0.5);
+  border-radius: var(--da-radius-md);
+  padding: 12px 16px;
+  color: var(--da-text-main);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: daFadeUp 0.5s ease forwards;
+}
+
+/* ============================================
+   ローディング
+   ============================================ */
+.loading {
   text-align: center;
   font-size: 14px;
   color: var(--da-text-sub);
@@ -118,16 +175,16 @@
   padding: 12px 0;
   animation: daPulse 1.6s ease-in-out infinite;
 }
- 
+
 @keyframes daPulse {
   0%, 100% { opacity: 0.5; }
   50%       { opacity: 1;   }
 }
- 
+
 /* ============================================
-   5. 分析結果エリア div（result内）
+   結果セクション
    ============================================ */
-.analyzer > div {
+.result-section {
   background: var(--da-card-bg);
   border: 1px solid var(--da-card-border);
   border-radius: var(--da-radius-lg);
@@ -140,57 +197,129 @@
   gap: 14px;
   animation: daFadeUp 0.5s ease forwards;
 }
- 
-/* 分析結果タイトル h2 */
-.analyzer h2 {
+
+/* ============================================
+   モデルセクション
+   ============================================ */
+.model-section {
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   分析セクション
+   ============================================ */
+.analysis-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analysis-section h2 {
   font-size: 16px;
   font-weight: 600;
   color: var(--da-text-main);
   letter-spacing: 0.04em;
   margin: 0;
 }
- 
-/* 分析結果テキスト p（div内） */
-.analyzer div > p {
+
+.analysis-text {
   font-size: 14px;
   color: var(--da-text-sub);
   line-height: 1.85;
   margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
- 
+
 /* ============================================
-   6. 履歴エリア
+   キーワード表示
    ============================================ */
-/* 履歴タイトル h3 */
-.analyzer h3 {
+.keywords-display {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.keywords-display h3 {
   font-size: 13px;
   font-weight: 500;
   color: var(--da-text-muted);
   letter-spacing: 0.06em;
-  margin: 0 0 6px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 0 0 8px;
 }
- 
-/* 履歴1件ずつの div */
-.analyzer div div {
+
+.keywords-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.keyword-tag {
+  background: rgba(160, 120, 220, 0.3);
+  color: var(--da-text-main);
+  padding: 6px 12px;
+  border-radius: var(--da-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(160, 120, 220, 0.5);
+}
+
+/* ============================================
+   履歴セクション
+   ============================================ */
+.history-section {
+  background: var(--da-card-bg);
+  border: 1px solid var(--da-card-border);
+  border-radius: var(--da-radius-lg);
+  padding: 22px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--da-card-shadow);
+  animation: daFadeUp 0.5s ease forwards;
+}
+
+.history-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--da-text-main);
+  letter-spacing: 0.04em;
+  margin: 0 0 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-card {
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--da-radius-md);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   transition: transform var(--da-ease), box-shadow var(--da-ease);
 }
- 
-.analyzer div div:hover {
+
+.history-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(160, 130, 210, 0.18);
 }
- 
-/* 履歴内テキスト p */
-.analyzer div div p {
+
+.history-header {
+  margin: 0;
+}
+
+.history-time {
+  font-size: 12px;
+  color: var(--da-text-muted);
+  margin: 0;
+}
+
+.history-text {
   font-size: 12px;
   color: var(--da-text-sub);
   line-height: 1.65;
@@ -200,33 +329,47 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
- 
-/* 履歴の区切り線 hr */
-.analyzer hr {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  margin: 4px 0 0;
+
+.history-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
 }
- 
+
+.history-tag {
+  background: rgba(160, 120, 220, 0.25);
+  color: var(--da-text-sub);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid rgba(160, 120, 220, 0.4);
+}
+
 /* ============================================
-   7. アニメーション
+   アニメーション
    ============================================ */
 @keyframes daFadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
- 
+
 /* ============================================
-   8. レスポンシブ
+   レスポンシブ
    ============================================ */
 @media (max-width: 480px) {
-  .analyzer {
+  .dream-analyzer-container {
     padding: 20px 14px 40px;
   }
- 
-  .analyzer button {
-    align-self: stretch;
-    width: 100%;
+
+  .button-group {
+    justify-content: stretch;
+  }
+
+  .analyze-btn,
+  .clear-btn {
+    flex: 1;
   }
 }
  
