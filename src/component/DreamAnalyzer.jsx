@@ -1,172 +1,105 @@
 import "../styles/DreamAnalyzer.css";
 import { useState } from "react";
-import DreamModel from "./DreamModel";
+import DreamModel from "./DreamModel"; // パスが正しいか確認してください
 
-export default function DreamAnalyzer() {
+export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState(null);
-  const [keywords, setKeywords] = useState([]);
-  const [error, setError] = useState(null);
+  const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
 
   const analyzeDream = async () => {
-    if (!text.trim()) {
-      setError("夢の内容を入力してください");
-      return;
-    }
-
+    if (!text.trim()) return;
     setLoading(true);
-    setError(null);
-    setAnalysis(null);
-    setKeywords([]);
+    setResult(null);
 
     try {
-      // ✅ APIに夢を送信
-      const response = await fetch("/api/analyze", {
+      const response = await fetch("http://localhost:5000/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: text }),
+        body: JSON.stringify({ text: text }), 
       });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
       const data = await response.json();
+      setResult(data);
+      setLoading(false);
 
-      console.log("API Response:", data);
+      if (data.modelKey && onAnalyzeSuccess) {
+        onAnalyzeSuccess(data.modelKey);
+      }
 
-      // ✅ 分析結果とキーワードを保存
-      setAnalysis(data.analysis);
-      setKeywords(data.keywords || []);
-
-      // ✅ 履歴に追加
       setHistory((prev) => [
-        {
-          text,
-          analysis: data.analysis,
-          keywords: data.keywords || [],
-          timestamp: new Date().toLocaleString("ja-JP"),
-        },
+        { text, result: data, time: new Date().toLocaleTimeString() },
         ...prev,
       ]);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(err.message || "エラーが発生しました");
-    } finally {
+    } catch (error) {
+      console.error("Error:", error);
+      setResult({ error: error.message });
       setLoading(false);
     }
   };
 
-  const handleClear = () => {
-    setText("");
-    setAnalysis(null);
-    setKeywords([]);
-    setError(null);
-  };
+  const clearInput = () => setText("");
 
   return (
     <div className="dream-analyzer-container">
-      {/* ヘッダー */}
-      <div className="header">
-        <h1>✨ 夢分析アプリケーション</h1>
-        <p>あなたの夢を入力して、深層心理を分析します</p>
-      </div>
-
       {/* 入力セクション */}
       <div className="input-section">
         <textarea
+          className="dream-input"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="夢の内容を詳しく入力してください..."
+          placeholder="昨夜はどんな夢を見ましたか？"
           disabled={loading}
-          className="dream-input"
         />
-
         <div className="button-group">
-          <button
-            onClick={analyzeDream}
-            disabled={loading || !text.trim()}
-            className="analyze-btn"
-          >
-            {loading ? "🔄 分析中..." : "🔮 分析する"}
-          </button>
-
-          <button
-            onClick={handleClear}
-            disabled={loading || !text.trim()}
-            className="clear-btn"
-          >
-            クリア
+          <button className="clear-btn" onClick={clearInput} disabled={loading}>クリア</button>
+          <button className="analyze-btn" onClick={analyzeDream} disabled={loading}>
+            {loading ? "分析中..." : "夢を分析する"}
           </button>
         </div>
       </div>
 
-      {/* エラーメッセージ */}
-      {error && (
-        <div className="error-box">
-          <span>❌</span> {error}
-        </div>
-      )}
+      {loading && <div className="loading">深層心理を読み解いています...</div>}
 
-      {/* 分析結果セクション */}
-      {analysis && (
+      {result?.error && <div className="error-box">{result.error}</div>}
+
+      {/* 結果表示セクション：resultがある時だけ表示されるようにガードされています */}
+      {result && !result.error && (
         <div className="result-section">
-          {/* 3Dモデル表示（キーワードがある場合） */}
-          {keywords.length > 0 && (
-            <div className="model-section">
-              <DreamModel
-                keywords={keywords}
-                onModelComplete={(modelData) => {
-                  console.log("Models loaded:", modelData);
-                }}
-              />
-            </div>
-          )}
+          
+          {/* ★ カード内の3Dモデル表示エリア */}
+          <div className="model-section">
+            <DreamModel modelKey={currentModelKey} />
+          </div>
 
-          {/* 分析テキスト */}
           <div className="analysis-section">
-            <h2>📖 分析結果</h2>
-            <div className="analysis-text">{analysis}</div>
-
-            {/* キーワード表示 */}
-            {keywords.length > 0 && (
-              <div className="keywords-display">
-                <h3>🏷️ 抽出されたキーワード</h3>
-                <div className="keywords-tags">
-                  {keywords.map((keyword, idx) => (
-                    <span key={idx} className="keyword-tag">
-                      {keyword}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <h2>分析結果</h2>
+            <p className="analysis-text">{result.summary}</p>
+          </div>
+          <div className="keywords-display">
+            <h3>抽出されたキーワード</h3>
+            <div className="keywords-tags">
+              <span className="keyword-tag">{result.modelKey}</span>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 分析履歴セクション */}
+      {/* 履歴セクション */}
       {history.length > 0 && (
         <div className="history-section">
-          <h3>📚 分析履歴</h3>
+          <h3>分析ログ</h3>
           <div className="history-list">
-            {history.map((item, idx) => (
-              <div key={idx} className="history-card">
-                <div className="history-header">
-                  <p className="history-time">⏰ {item.timestamp}</p>
+            {history.map((item, index) => (
+              <div key={index} className="history-card">
+                <p className="history-time">{item.time}</p>
+                <p className="history-text">{item.text}</p>
+                <div className="history-tags">
+                  <span className="history-tag">{item.result.modelKey}</span>
                 </div>
-                <p className="history-text">"{item.text.substring(0, 100)}..."</p>
-                {item.keywords.length > 0 && (
-                  <div className="history-tags">
-                    {item.keywords.map((kw, i) => (
-                      <span key={i} className="history-tag">
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
           </div>
