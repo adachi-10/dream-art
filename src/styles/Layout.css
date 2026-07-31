@@ -31,7 +31,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; ❌ 撤去：これがあるとすべてのブロックが横に縮こまります */
+  width: 100%;           /* 💡 追加：最外枠が画面幅100%であることを確実に保証する */
 }
 
 /* ============================================
@@ -42,7 +43,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px;
+  padding: 16px 32px; /* 💡 左右の余白は32px */
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -50,6 +51,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  box-sizing: border-box; /* 追加 */
 }
 
 .nav__logo {
@@ -85,11 +87,12 @@ body {
 .hero {
   width: 100%;
   text-align: center;
-  padding: 52px 24px 36px;
+  padding: 52px 32px 36px; /* 💡 左右パディングをナビと同じ32pxに揃える */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  box-sizing: border-box; /* 追加 */
 }
 
 .hero__title {
@@ -113,16 +116,29 @@ body {
 }
 
 /* ============================================
+/* ============================================
+   4. メインコンテンツ .main
+   ============================================ */
+/* ============================================
    4. メインコンテンツ .main
    ============================================ */
 .main {
   width: 100%;
-  max-width: 540px;
   flex: 1;
-  padding: 8px 20px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 8px 0px 40px; 
+  display: block; /* 💡 flex から block に変更することで、中のmargin: autoが100%正しく機能し、右ズレを完全に防ぎます */
+  box-sizing: border-box;
+}
+
+
+/* 💡 入力セクション（textareaやボタンがある場所） */
+/* ここはナビの端まで広がると大きすぎるため、個別に最大幅を設定して中央に保ちます */
+.input-section {
+  width: 100%;
+  max-width: 800px; /* 入力欄はすっきりした元のサイズをキープ */
+  margin: 0 auto;
+  padding: 0 32px;  /* 左右に余白を持たせて綺麗に保ちます */
+  box-sizing: border-box;
 }
 
 /* ============================================
@@ -141,6 +157,27 @@ body {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.04em;
+}
+
+/* Layout.css に追記 */
+
+.nav__links li {
+  list-style: none; /* もしポッチが出ていたら消す */
+}
+
+.nav__button {
+  background: none;        /* 背景色を消す */
+  border: none;            /* 枠線を消す */
+  color: #fff;             /* 文字色を白に（以前のリンクの色に合わせる） */
+  font-family: inherit;    /* フォントを継承 */
+  font-size: 14px;         /* 以前のサイズに合わせる */
+  cursor: pointer;         /* カーソルを指の形に */
+  padding: 0;              /* 余計なパディングを消す */
+  transition: opacity 0.2s ease;
+}
+
+.nav__button:hover {
+  opacity: 0.7;            /* ホバー時に少し薄くする */
 }
 
 /* ============================================

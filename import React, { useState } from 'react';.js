@@ -9,7 +9,7 @@ const DreamAnalyzer = ({ onAnalysisComplete }) => {
   const [step, setStep] = useState('input'); // input, analysis, selection, complete
   const [error, setError] = useState('');
 
-  const keywords = ['死', '生', '人', '絶望'];
+  const keywords = ['死', '生', '欲望'];
 
   const handleAnalyzeDream = async () => {
     if (dreamInput.trim().length === 0) {

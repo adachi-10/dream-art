@@ -42,12 +42,31 @@
    ============================================ */
 .dream-analyzer {
   width: 100%;
-  max-width: 480px;
+  /* 💡 修正：max-width: 480px; を解除します！ */
+  max-width: 100%; /* 限界を画面幅100%まで一気に開放 */
+  
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding: 0 16px 48px;
+}
+
+/* 💡 追加：入力フォームカードだけを、従来の美しい480pxサイズに優しく留めます */
+.dream-form {
+  background: var(--da-card-bg);
+  border: 1px solid var(--da-card-border);
+  border-radius: var(--da-radius-lg);
+  padding: 22px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--da-card-shadow);
+  transition: box-shadow var(--da-ease);
+  
+  /* 💡 追記：フォーム自体の最大幅を480pxにして中央寄せにします */
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 /* ============================================

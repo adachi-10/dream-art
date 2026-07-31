@@ -61,8 +61,10 @@
   flex-direction: column;
   gap: 25px;
   place-content: center;
-  place-items: center;
+  /* place-items: center; ❌ 撤去：これがあると子要素（.mainやカード）の横幅がガチガチに絞り込まれます */
+  align-items: stretch;    /* 💡 追加：中身の横幅を100%均等に引き伸ばし、電力（画面幅）を底まで通します */
   flex-grow: 1;
+  width: 100%;             /* 💡 追加：中央コンテナ自体が画面いっぱいであることを保証 */
 
   @media (max-width: 1024px) {
     padding: 32px 20px 24px;

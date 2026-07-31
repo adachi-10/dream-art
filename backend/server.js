@@ -1,6 +1,6 @@
 require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 
-// 2. その後に中身を確認（デバッグ用）
 console.log("API KEY exists:", !!process.env.OPENAI_API_KEY); 
 
 const express = require('express');
@@ -10,24 +10,23 @@ const OpenAI = require('openai');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ミドルウェア
 app.use(cors());
 app.use(express.json());
 
-// 3. 環境変数が読み込まれた後にOpenAIを初期化
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-require('dotenv').config({ path: __dirname + '/.env' });
-// ヘルスチェック
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// 夢分析エンドポイント
-app.post('/api/analyze', async (req, res) => {
+// 💡 修正①：React側のfetch先に合わせて、エンドポイントを `/api/dream/analyze` に変更
+app.post('/api/dream/analyze', async (req, res) => {
   try {
-    const { text } = req.body;
+    // 💡 修正②：React側は `dreamContent` というキーで夢のテキストを送ってきているため、正しく受け取る
+    const { dreamContent } = req.body;
+    const text = dreamContent;
 
     if (!text || text.trim().length === 0) {
       return res.status(400).json({ error: '夢の内容が必要です' });
@@ -35,37 +34,55 @@ app.post('/api/analyze', async (req, res) => {
 
     console.log('Analyzing dream:', text);
 
-   const response = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o-mini", 
       messages: [
         {
           role: "system",
-          content: "You are an expert psychologist specializing in dream analysis using Freudian and Jungian theories. Respond in Japanese. Provide a concise summary of 100-150 characters.",
+          // 💡 修正③：古い文字数制限（100-150）を削除し、完全に「明朝体向けの美しい150〜250文字」に統一
+          content: "You are an expert psychologist specializing in dream analysis using Freudian and Jungian theories. Respond in Japanese. You must strictly follow the character length constraints provided by the user.",
         },
         {
           role: "user",
-          content: `以下の夢をフロイト・ユング心理学の観点から分析してください：\n\n夢の内容：${text}\n\n分析結果と最も合致する単語（死、生、人、絶望の中から1-2個）を返してください。`,
+          content: `ユーザーが入力した夢の内容を、フロイトやユングの心理学観点から深く多角的に分析してください。
+
+【厳守すべき制約事項】
+・必ず日本語で記述すること。
+・箇条書きは禁止。地続きの美しい物語のような文章にすること。
+・分析結果の文字数は「絶対に」最低150文字以上、最高250文字以内に収めてください。短すぎたり長すぎたりしてはいけません。
+・文章の最後に、改行を挟んで、この夢の核心を表すキーワードを【キーワード: 死】か【キーワード: 生】か【キーワード: 欲望】のいずれかの形式で、必ずどれか1つだけ含めて出力してください。
+
+夢の内容：${text}`,
         },
       ],
-      temperature: 1, // gpt-4o系は1がデフォルトで推奨されることが多いです
-      // max_tokens を max_completion_tokens に変更、もしくは一旦削除
-      max_completion_tokens: 500, 
+      temperature: 0.7, // 💡 少しだけ下げることで、文字数や出力フォーマットの厳守率が大幅に上がります
+      max_completion_tokens: 600, 
     });
 
-    // 結果の受け取り（ここも重要！）
-    const analysis = response.choices[0].message.content || "";
+    const fullResponseText = response.choices[0].message.content || "";
     
-    const keywords = ['死', '生', '人',];
-    const foundKeywords = keywords.filter(keyword => analysis.includes(keyword));
+    // 💡 修正④：AIの文章から「死・生・欲望」のキーワードを確実に見つけ出すロジック
+    const targetKeywords = ['死', '生', '欲望'];
+    let detectedKeyword = '死'; // 見つからなかった場合のデフォルト
 
+    // AIの返答テキストから【キーワード: 〇〇】の部分を探すか、含まれる単語をチェック
+    for (const kw of targetKeywords) {
+      if (fullResponseText.includes(kw)) {
+        detectedKeyword = kw;
+        break;
+      }
+    }
+
+    // クライアント（フロント）に返すデータ構造をReactの変数名（analysis, modelKeysなど）に完全一致させる
     res.json({
-      summary: analysis.trim(),
-      keywords: foundKeywords.length > 0 ? foundKeywords : ['人'],
-      modelKey: foundKeywords[0] || '人',
+      analysis: fullResponseText.trim(),
+      summary: fullResponseText.trim(), // 互換性のために残す
+      selectedWords: [detectedKeyword],
+      modelKeys: [detectedKeyword],     // これがReact側で動画や背景色（死、生、欲望）の判定に使われます
+      modelKey: detectedKeyword
     });
 
   } catch (error) {
-    // ここでターミナル（Node.js側）に具体的なエラー内容が出ます
     console.error("OpenAI API ERROR:", error); 
     res.status(500).json({ 
       error: '分析処理に失敗しました',
@@ -73,7 +90,7 @@ app.post('/api/analyze', async (req, res) => {
     });
   }
 });
-// エラーハンドリング
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error' });
@@ -81,6 +98,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`✓ Server running on http://localhost:${PORT}`);
-  console.log(`✓ Health check: http://localhost:${PORT}/health`);
-  console.log(`✓ Analyze endpoint: POST http://localhost:${PORT}/api/analyze`);
+  console.log(`✓ Analyze endpoint updated to: POST http://localhost:${PORT}/api/dream/analyze`);
 });
