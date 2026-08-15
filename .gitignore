@@ -13,7 +13,7 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
+backend/node_modules/.env
 dist
 
 # Editor directories and files
@@ -28,4 +28,3 @@ dist
 *.sw?
 
 .vercel
-.env*.local
