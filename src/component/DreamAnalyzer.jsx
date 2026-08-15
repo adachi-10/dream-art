@@ -1,46 +1,164 @@
-// src/components/DreamAnalyzer.jsx
 import "../styles/DreamAnalyzer.css";
 import { useState, useEffect, useRef } from "react";
 import DreamModel from "./DreamModel";
+import { useDeepAnalysisStorage } from "../hooks/useDeepAnalysisStorage";
+import { formatRadarChartData, formatHistoryTransitionData } from "../utils/formatDeepAnalysisData";
+import { 
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid
+} from 'recharts';
 
 const BACKGROUND_COLORS = {
   "死": "#2A2A2A",
   "欲望": "#382941",
   "生": "#52566E",
+  "社交": "#977650",
+  "恐怖": "#222222",
+  "自由": "#60A8B3"
 };
 
-export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showHistoryOnly }) {
+const DYNAMIC_QUESTIONS = {
+  "死": "今、終わらせたいこと、終わってほしいことなどはありますか？",
+  "生": "最近始めたことや、新しく始めたいことはありますか？",
+  "欲望": "本当は手に入れたいのに、見ないふりをしている望みはありますか？",
+  "社交": "周りの人との関係で、性格や感情を演じている部分はありますか？",
+  "恐怖": "今、避けて通りたいと感じている不安やプレッシャーはありますか？",
+  "自由": "日常の中で、もっと解き放ちたいと感じている制約はありますか？"
+};
+
+const SHADOW_DESCRIPTIONS = {
+  "ヒーロー": "隠れた潜在能力を発揮することを恐れ、生み出されることへの葛藤を抱えています。周囲の過度な期待や自分自身の完璧主義に応えようとするあまり、本当の自分を犠牲にしている可能性があります。",
+  "トリックスター": "既存のルールや常識を打ち破りたいという無意識の欲求が高まっています。抑圧されたユーモアや破壊的創造力が解放を求めています。",
+  "賢者": "物事の真理や知識を極めたい反面、現実の複雑な感情から逃避したい内面を表しています。",
+  "アニマ": "感性や直感、内なる女性性（または感受性）との統合を求めています。",
+  "孤児": "どこにも属せない孤独感や、自立への恐れと望みが複雑に交錯しています。",
+  "破壊者": "不要になった執着や過去の自分をリセットし、新しいスタートを切りたい強い衝動の現れです。"
+};
+
+// ResultCard コンポーネント（コンポーネント外部定義）
+const ResultCard = ({ 
+  item, 
+  isHistory = false, 
+  currentModelKey, 
+  resultRef, 
+  formatDate, 
+  q1, 
+  setQ1, 
+  q2, 
+  setQ2, 
+  pendingCount, 
+  handleSaveReflection 
+}) => {
+  const resData = item?.result || item;
+  const modelKeyToShow = 
+    (resData?.modelKeys && resData.modelKeys[0]) || 
+    resData?.modelKey || 
+    (Array.isArray(resData?.selectedWords) && resData.selectedWords[0]) ||
+    currentModelKey || 
+    "生";
+
+  const currentBgColor = BACKGROUND_COLORS[modelKeyToShow] || "#52566E";
+  const dynamicQ2Text = DYNAMIC_QUESTIONS[modelKeyToShow] || "この象徴について思い当たる感情はありますか？";
+
+  return (
+    <div 
+      ref={resultRef} 
+      className="result-section" 
+      style={{ 
+        backgroundColor: currentBgColor,
+        marginBottom: isHistory ? "40px" : "0"
+      }}
+    >
+      {isHistory && (
+        <p className="history-date">{formatDate(item.time)}</p>
+      )}
+
+      <div className="model-section">
+        <DreamModel modelKey={modelKeyToShow} />
+      </div>
+
+      <div className="keywords-display">
+        <div className="keywords-tags">
+          <span className="keyword-tag">
+            {modelKeyToShow}
+            <span className="decoration-box"></span>
+          </span>
+        </div>
+      </div>
+
+      <div className="analysis-section">
+        <p className="analysis-text">{resData?.summary || resData?.analysis}</p>
+      </div>
+
+      {/* 内省フォーム */}
+      {!isHistory && (
+        <div className="reflection-card">
+          <h2 className="reflection-main-title">更に深層心理を分析する</h2>
+          
+          <div className="reflection-field">
+            <label htmlFor="q1-input">Q1. 今の自分の状況・感じたこと</label>
+            <textarea 
+              id="q1-input"
+              className="reflection-textarea"
+              rows={5}
+              value={q1} 
+              onChange={(e) => setQ1(e.target.value)}
+              placeholder="現実で起きていることや、今感じている感情を自由に入力してください..."
+            />
+          </div>
+
+          <div className="reflection-field">
+            <label htmlFor="q2-input">Q2. 【{modelKeyToShow}】{dynamicQ2Text}</label>
+            <textarea 
+              id="q2-input"
+              className="reflection-textarea"
+              rows={5}
+              value={q2} 
+              onChange={(e) => setQ2(e.target.value)}
+              placeholder="直感で思い浮かんだ答えを入力してください..."
+            />
+          </div>
+
+          <div className="reflection-btn-container">
+            <button 
+              className="reflection-save-btn"
+              onClick={handleSaveReflection}
+              disabled={!q1.trim() || !q2.trim()}
+            >
+              内省ログを保存（{pendingCount + 1} / 3）
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="custom-footer-message">
+        <p>結果については自分の深層心理について考えるきっかけとしてください。明日もいい夢を</p>
+      </div>
+    </div>
+  );
+};
+
+
+export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showHistoryOnly, activeTab }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
-  const [historyIndex, setHistoryIndex] = useState(0); // 0 = latest
+  const [historyIndex, setHistoryIndex] = useState(0);
 
-  // 💡 【修正①】漏れていた homeAudioRef の定義を確実に追加
-  const homeAudioRef = useRef(null);
-  // 自動スクロール用のRef
+  const [q1, setQ1] = useState("");
+  const [q2, setQ2] = useState("");
+
+  const { 
+    pendingCount, 
+    deepHistory, 
+    latestAnalysis, 
+    isAnalyzing, 
+    addSession 
+  } = useDeepAnalysisStorage();
+
   const resultRef = useRef(null);
 
-  // 初期ホームBGM（home.mp3）の再生管理
-  useEffect(() => {
-    const homeAudio = new Audio("/audio/home.mp3");
-    homeAudio.loop = true;
-    homeAudio.volume = 0.3;
-    homeAudioRef.current = homeAudio;
-
-    homeAudio.play().catch((err) => {
-      console.log("ホームBGMはユーザーのアクション後に再生されます:", err);
-    });
-
-    return () => {
-      if (homeAudioRef.current) {
-        homeAudioRef.current.pause();
-        homeAudioRef.current = null;
-      }
-    };
-  }, []);
-
- 
   useEffect(() => {
     if (result && !result.error && resultRef.current) {
       setTimeout(() => {
@@ -52,32 +170,22 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
     }
   }, [result, historyIndex]);
 
+  // 夢分析処理
   const analyzeDream = async () => {
     if (!text.trim()) return;
     setLoading(true);
     setResult(null);
 
-   
-    if (homeAudioRef.current) {
-      try {
-        homeAudioRef.current.pause();
-      } catch (e) {
-        console.log("BGMの停止処理スキップ:", e);
-      }
-    }
-
     try {
-      // 末尾をサーバーの記述と完全に一致させる
-// 修正後
-const response = await fetch('http://localhost:5000/api/dream/analyze', { // 👈 /analyze を追加
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ dreamContent: text }), // 👈 キーを text から dreamContent に変更
-});
+      const response = await fetch('http://localhost:5000/api/dream/analyze', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dreamContent: text }),
+      });
 
-if (!response.ok) throw new Error(`API Error: ${response.status}`);
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
-const data = await response.json();
+      const data = await response.json();
 
       const normalized = {
         ...data,
@@ -85,14 +193,28 @@ const data = await response.json();
           ? data.modelKeys.slice(0, 2)
           : data.modelKey
           ? [data.modelKey]
-          : [],
+          : ["生"],
       };
 
       setResult(normalized);
-      setLoading(false);
 
       if (normalized.modelKeys.length > 0 && onAnalyzeSuccess) {
         onAnalyzeSuccess(normalized.modelKeys);
+      }
+
+      // コレクション用に解放済みキーワードをローカルストレージへ保存
+      try {
+        const newKey = normalized.modelKeys[0];
+        if (newKey) {
+          const rawSaved = localStorage.getItem("dream_art_unlocked_models");
+          const savedKeys = rawSaved ? JSON.parse(rawSaved) : [];
+          if (Array.isArray(savedKeys) && !savedKeys.includes(newKey)) {
+            const updatedKeys = [...savedKeys, newKey];
+            localStorage.setItem("dream_art_unlocked_models", JSON.stringify(updatedKeys));
+          }
+        }
+      } catch (storageErr) {
+        console.warn("コレクション解放保存のエラー:", storageErr);
       }
 
       setHistory((prev) => {
@@ -103,19 +225,41 @@ const data = await response.json();
         return next.slice(0, 10);
       });
       setHistoryIndex(0);
+
     } catch (error) {
       console.error("Error:", error);
-      setResult({ error: error.message });
+      setResult({ error: error.message || "分析に失敗しました。" });
+    } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const maxIndex = Math.max(0, history.length - 1);
-    if (historyIndex > maxIndex) {
-      setHistoryIndex(maxIndex);
+  // 内省ログ保存処理
+  const handleSaveReflection = async () => {
+    if (!q1.trim() || !q2.trim()) return;
+
+    const resData = result;
+    const key = (resData?.modelKeys && resData.modelKeys[0]) || resData?.modelKey || "生";
+
+    const currentCount = pendingCount + 1;
+
+    await addSession({
+      dream: text,
+      summary: resData?.summary || resData?.analysis,
+      keyword: key,
+      q1Response: q1,
+      q2Response: q2
+    });
+
+    setQ1("");
+    setQ2("");
+
+    if (currentCount >= 3) {
+      alert("3回分の内省ログが蓄積されました！「深層分析」メニューから解析結果を確認できます。");
+    } else {
+      alert(`内省ログを保存しました（現在 ${currentCount} / 3 件）。あと ${3 - currentCount} 回で深層分析が解放されます！`);
     }
-  }, [history, historyIndex]);
+  };
 
   const clearInput = () => setText("");
 
@@ -128,75 +272,138 @@ const data = await response.json();
     }
   };
 
-  const showPrevHistory = () => {
-    setHistoryIndex((idx) => Math.min(idx + 1, Math.max(0, history.length - 1)));
-  };
-  const showNextHistory = () => {
-    setHistoryIndex((idx) => Math.max(idx - 1, 0));
-  };
-
-  const ResultCard = ({ item, isHistory = false }) => {
-    const modelKeys = item?.result?.modelKeys && item.result.modelKeys.length > 0
-      ? item.result.modelKeys
-      : item?.result?.modelKey
-      ? [item.result.modelKey]
-      : [];
-
-    const modelKeyToShow = modelKeys.length > 0 ? modelKeys[0] : (isHistory ? item?.result?.modelKey : currentModelKey);
-    
-   
-    const currentBgColor = BACKGROUND_COLORS[modelKeyToShow] || BACKGROUND_COLORS["人"];
+  // 「深層分析」タブ表示モード
+  if (activeTab === "deep") {
+    const radarData = formatRadarChartData(latestAnalysis?.result?.defenseScores);
+    const transitionData = formatHistoryTransitionData(deepHistory);
 
     return (
-      <div 
-        ref={resultRef} 
-        className="result-section" 
-        style={{ 
-          backgroundColor: currentBgColor,
-          marginBottom: isHistory ? "40px" : "0"
-        }}
-      >
-        {isHistory && (
-          <p className="history-date">{formatDate(item.time)}</p>
-        )}
+      <div className="dream-analyzer-container">
+        <h1 className="deep-analysis-header">あなたの深層心理</h1>
 
-        {/* 1. 3D動画セクション（1200x600） */}
-        <div className="model-section">
-          <DreamModel modelKey={BACKGROUND_COLORS[modelKeyToShow] ? modelKeyToShow : "人"} />
-        </div>
-
-        {/* 💡 2. 抽出されたキーワードセクション（動画の真下、一番上に配置） */}
-        <div className="keywords-display">
-          <div className="keywords-tags">
-            {modelKeys.length > 0 ? modelKeys.map((k,i) => (
-              /* 💡 白い正方形のデザインを重ねるために、装飾用の空のspanを内側に追加しました */
-              <span key={i} className="keyword-tag">
-                {k}
-                <span className="decoration-box"></span>
-              </span>
-            )) : (
-              <span className="keyword-tag">
-                {item.result.modelKey || "（なし）"}
-                <span className="decoration-box"></span>
-              </span>
+        {isAnalyzing ? (
+          <div className="loading">深層心理（アーキタイプ・防衛機制）を統合解析中...</div>
+        ) : latestAnalysis ? (
+          <>
+            {/* 1. 複数回の分析による変化の推移グラフ */}
+            {transitionData.length >= 2 && (
+              <div className="deep-analysis-card" style={{ marginBottom: "30px" }}>
+                <h2 className="deep-section-title">防衛機制の移り変わり（過去{transitionData.length}回の推移）</h2>
+                <div style={{ width: "100%", height: 260, marginTop: "20px" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={transitionData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                      <XAxis dataKey="label" stroke="#ffffff" />
+                      <YAxis domain={[0, 100]} stroke="#ffffff" />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: "#2b2e38", border: "1px solid #555", borderRadius: "8px" }}
+                        itemStyle={{ color: "#fff" }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="rationalization" name="合理化" stroke="#f0b8d8" strokeWidth={2} />
+                      <Line type="monotone" dataKey="repression" name="投影" stroke="#b8d4f5" strokeWidth={2} />
+                      <Line type="monotone" dataKey="reactionFormation" name="反動形成" stroke="#c8aee8" strokeWidth={2} />
+                      <Line type="monotone" dataKey="displacement" name="逃避" stroke="#ffd180" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             )}
+
+            {/* 2. メインのリザルトカード */}
+            <div className="deep-analysis-card">
+              {/* 上段：今のあなたのアーキタイプ */}
+              <div className="deep-shadow-section">
+                <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
+                <div className="deep-shadow-container">
+                  <div className="deep-image-placeholder"></div>
+                  
+                  <div className="deep-shadow-info">
+                    <div className="deep-shadow-name">{latestAnalysis.result.shadow}</div>
+                    <div className="deep-shadow-desc">
+                      {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[latestAnalysis.result.shadow] || SHADOW_DESCRIPTIONS["ヒーロー"]}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 下段：今のあなたの防衛機制 */}
+              <div className="deep-defense-section-container">
+                <h2 className="deep-section-title">今のあなたの防衛機制</h2>
+                
+                <div className="deep-defense-section">
+                  <div className="deep-chart-container">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                        <PolarGrid stroke="rgba(255,255,255,0.2)" />
+                        <PolarAngleAxis dataKey="subject" stroke="#ffffff" tick={{ fill: '#ffffff', fontSize: 13 }} />
+                        <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="none" />
+                        <Radar
+                          name="防衛機制強度"
+                          dataKey="score"
+                          stroke="#c8aee8"
+                          fill="#b8a0e0"
+                          fillOpacity={0.4}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div className="deep-defense-info">
+                    <div className="deep-defense-title">{latestAnalysis.result.primaryDefense}</div>
+                    <div className="deep-defense-desc">{latestAnalysis.result.defenseDescription}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* アーキタイプの基礎解説 */}
+            <div className="glossary-section">
+              <h3 className="glossary-title">用語解説</h3>
+              <div className="shadow-glossary-card">
+                <h4>アーキタイプ（原型）</h4>
+                <p>生涯を通して変化する、今の自分が演じがちな役割や動機を指します。全部で六通りの結果があります。</p>
+              </div>
+            </div>
+
+            {/* 防衛機制の基礎解説 */}
+            <div className="defense-glossary-section">
+              <h3 className="defense-glossary-title">防衛機制についての基礎解説</h3>
+              <div className="defense-glossary-grid">
+                <div className="defense-glossary-item">
+                  <h4>合理化</h4>
+                  <p>受け入れがたい現実や不都合な事態に対し、もっともらしい理由や正当化をつけることで、自分の自尊心を守り納得させようとする心理的メカニズムです。</p>
+                </div>
+                <div className="defense-glossary-item">
+                  <h4>投影</h4>
+                  <p>自分の中にあるマイナスな感情や弱点を、自分ではなく他人にあると感じることで事実から目を背ける防衛反応です。</p>
+                </div>
+                <div className="defense-glossary-item">
+                  <h4>反動形成</h4>
+                  <p>本心とは真逆の態度や行動を過剰に強調して振る舞うことです。自らの弱さや恐れを隠すために、あえて極端に強く攻撃的に振る舞う傾向などが該当します。</p>
+                </div>
+                <div className="defense-glossary-item">
+                  <h4>逃避</h4>
+                  <p>直面したくない現実や不安から目をそらし、別の行動に打ち込むことで心を守る働きです。</p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="deep-analysis-card" style={{ textAlign: "center", padding: "60px 20px" }}>
+            <h2 style={{ fontSize: "22px", marginBottom: "16px" }}>まだ深層分析データがありません</h2>
+            <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
+              夢分析を行った後、「内省の記録」を **3回分** 蓄積すると<br />
+              あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。<br />
+              （現在: <strong>{pendingCount} / 3</strong> 件蓄積済み）
+            </p>
           </div>
-        </div>
-
-       
-        <div className="analysis-section">
-          <p className="analysis-text">{item.result.summary}</p>
-        </div>
-
-    
-        <div className="custom-footer-message">
-          <p>結果については自分の深層心理について考えるきっかけとしてください。明日もいい夢を</p>
-        </div>
-
+        )}
       </div>
     );
-  };
+  }
 
+  // 💡 通常の夢分析画面（初期状態では入力フォームのみ描画）
   return (
     <div className="dream-analyzer-container">
       {!showHistoryOnly && (
@@ -220,48 +427,18 @@ const data = await response.json();
       {loading && <div className="loading">深層心理を読み解いています...</div>}
       {result?.error && <div className="error-box">{result.error}</div>}
 
-      {showHistoryOnly ? (
-        <div className="history-carousel-container">
-          <div className="history-carousel-header">
-            <h3 style={{ margin: 0, color: "white" }}>過去の夢ログ（最大10件）</h3>
-            <div className="history-controls">
-              <button
-                className="history-arrow"
-                onClick={showPrevHistory}
-                aria-label="次へ"
-                disabled={historyIndex >= Math.max(0, history.length - 1)}
-                title="次の履歴"
-              >
-                ➤
-              </button>
-              <button
-                className="history-arrow"
-                onClick={showNextHistory}
-                aria-label="前へ"
-                style={{ transform: "rotate(180deg)" }}
-                disabled={historyIndex <= 0}
-                title="以前の履歴"
-              >
-                ➤
-              </button>
-            </div>
-          </div>
-
-          {history.length > 0 ? (
-            <div className="history-carousel">
-              <div className="history-item">
-                <ResultCard item={history[historyIndex]} isHistory={true} />
-              </div>
-              <div className="history-index-indicator">
-                {historyIndex + 1} / {history.length}
-              </div>
-            </div>
-          ) : (
-            <p style={{ color: "white", textAlign: "center" }}>履歴はまだありません</p>
-          )}
-        </div>
-      ) : (
-        result && !result.error && <ResultCard item={{ result }} />
+      {/* 💡 修正：実際に分析テキストやキーワードが存在する時のみ結果カードを描画 */}
+      {result && !result.error && (result.summary || result.analysis || result.modelKeys?.length > 0) && (
+        <ResultCard 
+          item={{ result }} 
+          currentModelKey={currentModelKey}
+          resultRef={resultRef}
+          formatDate={formatDate}
+          q1={q1} setQ1={setQ1}
+          q2={q2} setQ2={setQ2}
+          pendingCount={pendingCount}
+          handleSaveReflection={handleSaveReflection}
+        />
       )}
     </div>
   );

@@ -28,7 +28,7 @@ app.post('/api/analyze', async (req, res) => {
     const analysis = response.choices[0]?.message?.content || '';
 
     // 分析結果から単語を抽出
-    const keywords = ['死', '生', '欲望'];
+    const keywords = ['死', '生', '欲望','自由','恐怖','社交'];
     const foundKeywords = keywords.filter(keyword => analysis.includes(keyword));
 
     res.json({

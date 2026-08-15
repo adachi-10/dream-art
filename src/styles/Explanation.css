@@ -1,0 +1,145 @@
+/* ==========================================================================
+   説明機能（使い方 ＆ 用語解説）UIスタイル
+   ========================================================================== */
+
+.explanation-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  box-sizing: border-box;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+}
+
+/* 💡 メイン見出し（h2: ネイビー色） */
+.explanation-main-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a2744; /* 深みのあるネイビー */
+  text-align: center;
+  margin-bottom: 36px;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+}
+
+/* 💡 セクション共通：透明なすりガラスカード */
+.explanation-glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(220, 230, 250, 0.25));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow: 0 12px 36px rgba(40, 60, 100, 0.15),
+              inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
+}
+
+/* 解説と説明の間の間隔 */
+.explanation-section-spacing {
+  margin-bottom: 50px;
+}
+
+/* 使い方説明の各項目（横並び：左側テキスト / 右側1920x1080画像） */
+.explanation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  margin-bottom: 32px;
+}
+
+.explanation-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 左側：テキストエリア */
+.explanation-text-area {
+  flex: 1.2;
+  text-align: left;
+}
+
+.explanation-step-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff; /* 白フォント */
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.explanation-step-desc {
+  font-size: 15px;
+  line-height: 1.85;
+  color: #ffffff; /* h4相当の白フォント */
+  font-weight: 400;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 右側：1920x1080 (16:9) 図・画像配置スペース */
+.explanation-image-box {
+  flex: 1;
+  max-width: 440px;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  background: rgba(15, 25, 45, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.explanation-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 用語解説エリア */
+.glossary-card-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff; /* 白フォント */
+  margin-bottom: 24px;
+  text-align: left;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 12px;
+}
+
+.glossary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.glossary-item-text {
+  font-size: 15px;
+  line-height: 1.85;
+  color: #ffffff; /* h3相当の白フォント */
+  font-weight: 400;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.glossary-term {
+  font-weight: 700;
+  font-size: 17px;
+  margin-right: 6px;
+  color: #ffffff;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 820px) {
+  .explanation-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .explanation-image-box {
+    width: 100%;
+    max-width: 100%;
+  }
+}

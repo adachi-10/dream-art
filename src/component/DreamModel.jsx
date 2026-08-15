@@ -1,5 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
-
+import { useEffect, useRef } from "react";
 
 const MODEL_ASSETS = {
   "死": {
@@ -13,45 +12,56 @@ const MODEL_ASSETS = {
   "生": {
     video: "/video/human.mp4",
     audio: "/audio/human-bgm.mp3"   
+  },
+  "社交": {
+    video: "/video/social.mp4",
+    audio: "/audio/social.mp3"   
+  },
+  "自由": {
+    video: "/video/freedom.mp4",
+    audio: "/audio/freedom.mp3"   
+  },
+  "恐怖": {
+    video: "/video/fear.mp4",
+    audio: "/audio/fear.mp3"   
   }
 };
 
 export default function DreamModel({ modelKey }) {
-  // 現在のモデルに応じたアセット（動画・音声）を取得
-  const assets = useMemo(() => {
-    return MODEL_ASSETS[modelKey] || MODEL_ASSETS["人"];
-  }, [modelKey]);
+  // 💡 1. useMemoを使わず、定数オブジェクトを直接参照することで参照が変わるバグを防止
+  // 💡 2. 存在しないキーの場合のフォールバックを "人" ではなく "生" に修正
+  const targetKey = MODEL_ASSETS[modelKey] ? modelKey : "生";
+  const assets = MODEL_ASSETS[targetKey];
 
   const audioRef = useRef(null);
 
   useEffect(() => {
-    // 💡 2. 動画が表示された瞬間に、そのモデル専用のBGMを生成
+    // 💡 modelKeyが変わらない限り、このuseEffectは1回しか走らなくなります
     const audio = new Audio(assets.audio);
     audio.loop = true;   // ループ再生ON
     audio.volume = 0.4;  // 音量（40%）
     audioRef.current = audio;
 
-
     const playAudio = () => {
       audio.play().catch(err => {
-        console.log("ブラウザの自動再生制限による保留（ユーザーのアクション後に再生されます）:", err);
+        console.log("自動再生制限による保留:", err);
       });
     };
 
     playAudio();
 
-   
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
     };
-  }, [assets]); 
+  }, [targetKey]); // 👈 依存配列を「文字列(targetKey)」にすることで、文字入力時の再発火を100%遮断
+
   return (
     <div className="dream-video-wrapper">
       <video
-        key={assets.video} /* 動画切り替え時にプレイヤーを強制リフレッシュ */
+        key={assets.video} /* 動画ファイル自体が変わった時だけリフレッシュ */
         src={assets.video}
         autoPlay
         loop
