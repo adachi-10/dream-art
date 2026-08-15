@@ -8,6 +8,10 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid
 } from 'recharts';
 
+const API_BASE_URL = import.meta.env.PROD
+  ? "https://dream-art.onrender.com"
+  : "http://localhost:5000";
+
 const BACKGROUND_COLORS = {
   "死": "#2A2A2A",
   "欲望": "#382941",
@@ -177,11 +181,13 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/dream/analyze', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dreamContent: text }),
-      });
+
+// 💡 修正後
+const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ dreamContent: text }),
+});
 
       if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
