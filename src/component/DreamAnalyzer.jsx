@@ -281,7 +281,15 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
   // 「深層分析」タブ表示モード
   if (activeTab === "deep") {
     const radarData = formatRadarChartData(latestAnalysis?.result?.defenseScores);
-    const transitionData = formatHistoryTransitionData(deepHistory);
+    const transitionData = formatHistoryTransitionData(deepHistory);               
+const ARCHETYPE_IMAGES = {
+  "創造者": "/images/archetypes/creator.png",
+  "英雄": "/images/archetypes/hero.png",
+  "恋人": "/images/archetypes/lover.png",
+  "賢者": "/images/archetypes/sage.png",
+  "反逆者": "/images/archetypes/rebel.png",
+  "無垢": "/images/archetypes/innocent.png",
+};
 
     return (
       <div className="dream-analyzer-container">
@@ -333,6 +341,20 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
                 </div>
               </div>
 
+// レンダリング箇所（深層分析結果カード内）
+<div className="archetype-result-card">
+  <h3>あなたのアーキタイプ: {deepData.shadow}</h3>
+  {ARCHETYPE_IMAGES[deepData.shadow] && (
+    <img 
+      src={ARCHETYPE_IMAGES[deepData.shadow]} 
+      alt={deepData.shadow} 
+      className="archetype-image"
+      style={{ width: "160px", height: "auto", margin: "12px auto", display: "block" }}
+    />
+  )}
+  <p className="archetype-description">{deepData.shadowDescription}</p>
+</div>
+
               {/* 下段：今のあなたの防衛機制 */}
               <div className="deep-defense-section-container">
                 <h2 className="deep-section-title">今のあなたの防衛機制</h2>
@@ -371,6 +393,8 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
                 <p>生涯を通して変化する、今の自分が演じがちな役割や動機を指します。全部で六通りの結果があります。</p>
               </div>
             </div>
+
+
 
             {/* 防衛機制の基礎解説 */}
             <div className="defense-glossary-section">

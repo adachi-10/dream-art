@@ -267,3 +267,29 @@
     font-size: 48px !important;
   }
 }
+
+/* コレクションアイテムのコンテナ */
+.collection-item,
+.collection-card,
+.video-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* 動画要素自体の比率維持とはみ出し防止 */
+.collection-item video,
+.collection-card video,
+video {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 360px !important; /* スマホで見やすい高さ上限 */
+  object-fit: contain !important; /* 縦横比を崩さず枠内に収める */
+  display: block !important;
+  border-radius: 8px;
+}

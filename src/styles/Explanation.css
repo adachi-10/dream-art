@@ -73,7 +73,7 @@
   color: #ffffff; /* h4相当の白フォント */
   font-weight: 400;
   margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 /* 右側：1920x1080 (16:9) 図・画像配置スペース */
@@ -122,7 +122,7 @@
   color: #ffffff; /* h3相当の白フォント */
   font-weight: 400;
   margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .glossary-term {

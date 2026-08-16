@@ -15,9 +15,9 @@ function App() {
   const [unlockedKeys, setUnlockedKeys] = useState(() => {
     try {
       const saved = localStorage.getItem("dream_art_unlocked_models");
-      return saved ? JSON.parse(saved).flat(Infinity) : ["生"];
+      return saved ? JSON.parse(saved).flat(Infinity) : [];
     } catch {
-      return ["生"];
+      return [];
     }
   });
 

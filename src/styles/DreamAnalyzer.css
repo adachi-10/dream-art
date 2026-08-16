@@ -753,3 +753,41 @@
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* スマホ画面向けの自動調整スタイル（画面幅 768px 以下に適用） */
+@media screen and (max-width: 768px) {
+  /* リザルトカード全体のコンテナ幅を画面幅に合わせる */
+  .result-card,
+  .analysis-result-container,
+  .card {
+    width: 92% !important;
+    max-width: 100% !important;
+    margin: 16px auto !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* テキストのフォントサイズと行間を調整 */
+  .result-card p,
+  .result-card .description,
+  .result-card .summary-text {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important; /* 長い単語や記号での横スクロールを防止 */
+  }
+
+  /* 3Dキャンバスの高さ調整 */
+  .canvas-container,
+  canvas {
+    width: 100% !important;
+    height: 300px !important; /* スマホで見やすい高さに固定 */
+  }
+
+  /* ボタンや入力欄を押しやすくする */
+  .button,
+  .submit-btn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+  }
+}
