@@ -323,27 +323,30 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
             {/* 2. メインのリザルトカード */}
             <div className="deep-analysis-card">
               {/* 上段：アーキタイプ */}
-              <div className="deep-shadow-section">
-                <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
-                <div className="deep-shadow-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-                  {ARCHETYPE_IMAGES[shadowKey] && (
-                    <img 
-                      src={ARCHETYPE_IMAGES[shadowKey]} 
-                      alt={shadowKey} 
-                      className="archetype-image"
-                      style={{ width: "160px", height: "auto", borderRadius: "8px", objectFit: "contain" }}
-                    />
-                  )}
-                  
-                  <div className="deep-shadow-info" style={{ textAlign: "center" }}>
-                    <div className="deep-shadow-name" style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "8px" }}>
-                      {shadowKey}
-                    </div>
-                    <div className="deep-shadow-desc">
-                      {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[shadowKey] || SHADOW_DESCRIPTIONS["ヒーロー"]}
-                    </div>
-                  </div>
-                </div>
+              {/* 上段：今のあなたのアーキタイプ（左：画像 / 右：テキスト） */}
+<div className="deep-shadow-section">
+  <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
+  
+  <div className="deep-shadow-container">
+    {/* 左半分：アーキタイプ画像 */}
+    <div className="deep-shadow-image-wrapper">
+      {ARCHETYPE_IMAGES[shadowKey] && (
+        <img 
+          src={ARCHETYPE_IMAGES[shadowKey]} 
+          alt={shadowKey} 
+          className="archetype-image"
+        />
+      )}
+    </div>
+
+    {/* 右半分：アーキタイプ名 ＋ 解説文 */}
+    <div className="deep-shadow-info">
+      <div className="deep-shadow-name">{shadowKey}</div>
+      <div className="deep-shadow-desc">
+        {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[shadowKey] || ""}
+      </div>
+    </div>
+  </div>
               </div>
 
               {/* 下段：防衛機制 */}

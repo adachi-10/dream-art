@@ -112,7 +112,7 @@ app.post('/api/dream/analyze', async (req, res) => {
   }
 });
 
-// ==========================================================================
+/// ==========================================================================
 // 深層分析エンドポイント（3回分の夢＋内省ログからシャドウと防衛機制を分析）
 // ==========================================================================
 app.post('/api/dream/deep-analyze', async (req, res) => {
@@ -147,35 +147,33 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
 
 【文章量・品質に関する絶対厳守ルール】
 1. shadowDescription および defenseDescription は、文字数が少なすぎると分析の質が低く見えてしまいます。必ず【120文字以上150文字未満】の長文で丁寧に出力してください。（70文字程度の短い文章は不可）
-2.下の2つの要素を必ず含めて文章を構築してください：
+2. 下の2つの要素を必ず含めて文章を構築してください：
    - ① 対象の概念（シャドウまたは防衛機制）の根本的な意味の説明
    - ② ユーザーの3つのエピソードから読み取れる無意識と顕在意識の具体的ギャップ
-3.あなたはユング心理学に基づき、ユーザーのアーキタイプ、並びにフロイト心理学に基づき防衛機制を分析する専門家です。アーキタイプとは、ユーザーの性格そのものを表しているのではなく、
-人生において選びがちな役割・物語性を表しています。以下に６つのアーキタイプの「欲望」「恐れ」「得意な役回り」を整理するので該当するものを出力してください。
+3. あなたはユング心理学に基づき、ユーザーのアーキタイプ、並びにフロイト心理学に基づき防衛機制を分析する専門家です。アーキタイプとは、ユーザーの性格そのものを表しているのではなく、
+人生において選びがちな役割・物語性を表しています。以下に６つのアーキタイプの「欲望」「恐れ」「得意な役回り」を整理するので該当するものを1つ出力してください。
 「無垢」欲望：幸福でいたい、世界を信じたい 恐れ：罰を受けること、見捨てられること、世界が残酷であること 得意な役回り：物語の序盤の主人公、守られる存在、理想主義者
 「恋人」欲望：親密さ、つながり、一体感を得たい 恐れ：孤独、拒絶、愛されないこと 得意な役回り：ロマンスの主人公、絆で物語を動かす存在、感情の中心
 「反逆者」欲望：既存のルールや権力を壊したい 恐れ：無力であること、体制に取り込まれること 得意な役回り：革命家、アウトロー、ダークヒーロー
 「創造者」欲望：新しいものを作りたい、ビジョンを形にしたい 恐れ：凡庸さ、創造力の枯渇、自分の作品に価値がないこと 得意な役回り：発明家、芸術家、「新しい何か」を提案する存在
 「賢者」欲望：真実を知り、知識で世界を理解したい 恐れ：無知、騙されること、真実にたどり着けないこと 得意な役回り：師匠、参謀、謎を解く探偵
-「英雄」欲望：困難を克服して自分の価値を証明したい恐れ：弱さ、無力感、逃げること 得意な役回り：主人公、切り込み隊長、犠牲を厭わない仲間
-4.ユーザーに最も合致する防衛機制を以下の四種類から一つ選択して出力してください
-「合理化」失敗や望ましくない結果に「もっともらしい理由」をつけて納得しようとすることです。例：「試験に落ちたのは問題が悪いからだ」。
-「投影」自分の中にある感情や弱点を、他人にあると感じることです。例：相手は怒っていないのに、自分が怒っているからそう見える
-「反動形成」本当の気持ちとは逆の言動をとることです。例：好きな人にわざと冷たくする。
-「逃避」直面したくない現実や不安から目をそらし、別の行動に打ち込むことで心を守る働きです。例：試験勉強をしなければならないのに、一日中ゲームに没頭してしまう。
+「英雄」欲望：困難を克服して自分の価値を証明したい 恐れ：弱さ、無力感、逃げること 得意な役回り：主人公、切り込み隊長、犠牲を厭わない仲間
+4. 第1回〜第3回の各エピソードにおいて、以下の4つの防衛機制が働いているか（感知されたか）を true / false で客観的に判定してください。
+「合理化」失敗や望ましくない結果に「もっともらしい理由」をつけて納得しようとすることです。
+「投影」自分の中にある感情や弱点を、他人にあると感じることです。
+「反動形成」本当の気持ちとは逆の言動をとることです。
+「逃避」直面したくない現実や不安から目をそらし、別の行動に打ち込むことで心を守る働きです。
 
 【JSONフォーマット】
 {
-  "shadow": "アーキタイプとして、\\"創造主\\", \\"ヒーロー\\", \\"アニマ\\", \\"賢者\\", \\"破壊者\\", \\"孤児\\" の6つから最も該当する1つを選択。",
+  "shadow": "「無垢」「恋人」「反逆者」「創造者」「賢者」「英雄」の中から最も該当する1つ",
   "shadowDescription": "原型の意味解説＋ユーザーの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
-  "primaryDefense": "defenseScoresで最も数値が高い防衛機制の日本語名（\\"合理化\\", \\"投影\\", \\"反動形成\\", \\"逃避\\" のいずれか）",
-  "defenseDescription": "優位な防衛機制の意味解説＋その結論に至るまでの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
-  "defenseScores": {
-    "rationalization": 85,
-    "repression": 45,
-    "reactionFormation": 30,
-    "displacement": 60
-  }
+  "defenseDescription": "感知された防衛機制の意味解説＋その結論に至るまでの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
+  "detectedDefenses": [
+    { "episode": 1, "rationalization": true, "repression": false, "reactionFormation": false, "displacement": true },
+    { "episode": 2, "rationalization": false, "repression": false, "reactionFormation": true, "displacement": false },
+    { "episode": 3, "rationalization": true, "repression": false, "reactionFormation": false, "displacement": true }
+  ]
 }`
         },
         {
@@ -189,20 +187,61 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
 
     const analysisResult = JSON.parse(response.choices[0].message.content);
 
-    // 💡 グラフスコア（defenseScores）の最大値を判定し、primaryDefenseを完全一致させる
-    const scores = analysisResult.defenseScores || { rationalization: 50, repression: 40, reactionFormation: 30, displacement: 40 };
-    const scoreMap = [
-      { name: "合理化", score: scores.rationalization || 0 },
-      { name: "投影", score: scores.repression || 0 },
-      { name: "反動形成", score: scores.reactionFormation || 0 },
-      { name: "逃避", score: scores.displacement || 0 },
-    ];
-    scoreMap.sort((a, b) => b.score - a.score);
-    const topDefenseName = scoreMap[0].name;
+    // =========================================================================
+    // 💡 各エピソードの判定からスコアを計算（感知: +30点 / 未感知: +10点）
+    // =========================================================================
+    const scores = {
+      rationalization: 0,
+      repression: 0,
+      reactionFormation: 0,
+      displacement: 0,
+    };
+
+    const episodes = analysisResult.detectedDefenses || [];
+    const defenseKeys = ["rationalization", "repression", "reactionFormation", "displacement"];
+
+    episodes.forEach((ep) => {
+      defenseKeys.forEach((key) => {
+        if (ep[key] === true) {
+          scores[key] += 30; // 感知された場合
+        } else {
+          scores[key] += 10; // 感知されなかった場合
+        }
+      });
+    });
+
+    // 万が一判定配列が空だった場合のフォールバック（初期値各30点）
+    if (episodes.length === 0) {
+      scores.rationalization = 30;
+      scores.repression = 30;
+      scores.reactionFormation = 30;
+      scores.displacement = 30;
+    }
+
+    const defenseNameMap = {
+      rationalization: "合理化",
+      repression: "投影",
+      reactionFormation: "反動形成",
+      displacement: "逃避",
+    };
+
+    // 最高得点を算出
+    const maxScore = Math.max(...Object.values(scores));
+
+    // 最高得点の防衛機制を抽出（同点の場合は複数取得）
+    const topDefenses = Object.entries(scores)
+      .filter(([_, score]) => score === maxScore)
+      .map(([key, _]) => defenseNameMap[key]);
+
+    // 見出しテキスト（単数なら「合理化」、複数なら「合理化 / 逃避」）
+    const primaryDefenseTitle = topDefenses.join(" / ");
 
     const finalData = {
-      ...analysisResult,
-      primaryDefense: topDefenseName // グラフで最も高い項目名を必ず採用
+      shadow: analysisResult.shadow || "賢者",
+      shadowDescription: analysisResult.shadowDescription,
+      primaryDefense: primaryDefenseTitle,
+      defenseDescription: analysisResult.defenseDescription,
+      defenseScores: scores // チャートへ渡す点数（30〜90）
     };
 
     // フロントエンドに返却
