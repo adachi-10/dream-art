@@ -1,10 +1,10 @@
 /* ==========================================================================
-   コレクション機能（3x3グリッド ＆ 結果カード同等レイアウト）
+   コレクション機能（PC表示：動画エリアを700pxへ拡張）
    ========================================================================== */
 
 .collection-container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 30px 20px 60px;
   box-sizing: border-box;
@@ -28,7 +28,6 @@
   justify-items: center;
 }
 
-/* ベースのカード共通スタイル */
 .collection-card {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -43,7 +42,6 @@
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 🔒 ロック状態（未解放）：薄紫すりガラス ＋ 黒丸「？」 */
 .collection-card.is-locked {
   cursor: not-allowed;
   opacity: 0.85;
@@ -51,8 +49,6 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 8px 24px rgba(160, 130, 210, 0.25),
-              inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .locked-circle {
@@ -63,233 +59,140 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .locked-question-mark {
   color: #ffffff;
   font-size: 56px;
   font-weight: 700;
-  user-select: none;
 }
 
-/* 🔓 アンロック状態（解放済み）：キーワード色のすりガラス ＋ 写真表示 */
 .collection-card.is-unlocked {
   cursor: pointer;
-  /* 背景色（JSX側のstyleで注入）に強くすりガラス加工を施す */
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
-              inset 0 1.5px 3px rgba(255, 255, 255, 0.6);
 }
 
-.collection-card.is-unlocked:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45),
-              inset 0 2px 4px rgba(255, 255, 255, 0.8);
-  filter: brightness(1.08);
-}
-
-/* 解放モデルの写真画像（元の比率・見た目を維持） */
 .collection-thumbnail {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.25));
 }
-
-.collection-card.is-unlocked:hover .collection-thumbnail {
-  transform: scale(1.05);
-}
-
 
 /* ==========================================================================
-   モーダル：夢分析結果画面（ResultCard）と全く同じレイアウト
+   モーダル：PC表示（高さを700pxに拡張して見切れを防止）
    ========================================================================== */
 .collection-modal-backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: rgba(0, 0, 0, 0.75) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  z-index: 99999 !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding: 20px !important;
-  box-sizing: border-box !important;
-  overflow-y: auto !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-/* 夢分析結果カードと同じ枠組み */
 .collection-result-view {
-  position: relative !important;
-  width: 100% !important;
-  max-width: 1100px !important;
-  padding: 40px 30px !important;
-  border-radius: 20px !important;
-  box-sizing: border-box !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
-  margin: auto !important;
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  margin: auto;
 }
 
-/* 閉じるボタン */
 .collection-close-btn {
-  position: absolute !important;
-  top: 20px !important;
-  right: 24px !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  color: #ffffff !important;
-  font-size: 20px !important;
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-  cursor: pointer !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  z-index: 10 !important;
-  transition: all 0.2s ease !important;
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
-.collection-close-btn:hover {
-  background: rgba(255, 255, 255, 0.4) !important;
-  transform: scale(1.08) !important;
-}
-
-/* 夢分析結果と同じ動画表示エリア（1000px × 600px） */
+/* 💡 PC用動画表示エリア：700pxへ+100px拡張 */
 .collection-video-area {
-  width: 90% !important;
-  max-width: 1000px !important;
-  height: 600px !important;
-  margin: 0 auto 30px auto !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  overflow: hidden !important;
-  position: relative !important;
-  border-radius: 24px !important;
-  background: transparent !important;
+  width: 100%;
+  max-width: 1000px;
+  height: 700px; /* 見切れ防止のため+100px */
+  margin: 0 auto 30px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  border-radius: 24px;
+  background: transparent;
 }
 
 .collection-video-area video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* アスペクト比を崩さず綺麗に全体を収める */
+  display: block;
 }
 
-/* 夢分析結果と同じキーワード表示エリア（斜体明朝体） */
 .collection-keyword-area {
-  width: 100% !important;
-  max-width: 1000px !important;
-  margin: 20px auto 0 auto !important;
-  text-align: left !important;
-  box-sizing: border-box !important;
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto 0 auto;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .collection-keyword-text {
-  font-size: 80px !important;
-  font-family: "Yu Mincho", "YuMincho", "MS Mincho", serif !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.1em !important;
-  display: inline-block !important;
-  transform: skewX(-15deg) !important;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  font-size: 80px;
+  font-family: "Yu Mincho", "YuMincho", "MS Mincho", serif;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  transform: skewX(-15deg);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 900px) {
+/* スマホ表示 */
+@media screen and (max-width: 768px) {
+  .collection-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .collection-result-view {
+    width: 95% !important;
+    padding: 24px 16px !important;
+  }
+
   .collection-video-area {
     width: 100% !important;
-    height: 360px !important;
+    height: 320px !important;
+    margin-bottom: 16px !important;
   }
+
   .collection-keyword-text {
-    font-size: 48px !important;
+    font-size: 40px !important;
   }
-}
-/* 💡 夢分析結果と同じ動画表示エリア（1000px × 600px） */
-.collection-video-area {
-  width: 90% !important;
-  max-width: 1000px !important;
-  height: 600px !important;
-  margin: 0 auto 30px auto !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  overflow: hidden !important;
-  position: relative !important;
-  border-radius: 24px !important;
-  background: transparent !important;
-}
-
-.collection-video-area video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-}
-
-/* 💡 夢分析結果と同じキーワード表示エリア（斜体明朝体） */
-.collection-keyword-area {
-  width: 100% !important;
-  max-width: 1000px !important;
-  margin: 20px auto 0 auto !important;
-  text-align: left !important;
-  box-sizing: border-box !important;
-}
-
-.collection-keyword-text {
-  font-size: 80px !important;
-  font-family: "Yu Mincho", "YuMincho", "MS Mincho", serif !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.1em !important;
-  display: inline-block !important;
-  transform: skewX(-15deg) !important;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
-}
-
-@media (max-width: 900px) {
-  .collection-video-area {
-    width: 100% !important;
-    height: 360px !important;
-  }
-  .collection-keyword-text {
-    font-size: 48px !important;
-  }
-}
-
-/* コレクションアイテムのコンテナ */
-.collection-item,
-.collection-card,
-.video-wrapper {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-/* 動画要素自体の比率維持とはみ出し防止 */
-.collection-item video,
-.collection-card video,
-video {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: auto !important;
-  max-height: 360px !important; /* スマホで見やすい高さ上限 */
-  object-fit: contain !important; /* 縦横比を崩さず枠内に収める */
-  display: block !important;
-  border-radius: 8px;
 }

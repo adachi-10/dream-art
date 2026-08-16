@@ -27,7 +27,7 @@ export default function Layout({ children, onPageChange }) {
       <header className="hero">
         <h1 className="hero__title">Dream Art</h1>
         <p className="hero__sub">
-          ～ユングらによる古典心理学で夢から隠れた自分を理解する～<br />
+          ～夢から始まる自己分析～<br />
           夢の内容を入力してください。AIがあなたの内側にある感情を読み解き、深層心理が3Dアートに変換されます。
         </p>
 

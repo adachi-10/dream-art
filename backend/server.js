@@ -133,14 +133,13 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
 ・象徴への内省（顕在意識/Q2）: ${s.q2Response}
 `).join('\n');
 
-   // server.js 内の深層分析プロンプト部分
-
-const response = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [
-    {
-      role: "system",
-      content: `あなたは精神分析およびユング心理学の専門家です。
+    // server.js 内の深層分析プロンプト部分
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `あなたは精神分析およびユング心理学の専門家です。
 提供された3回分の「夢（無意識）」と「内省（顕在意識）」のギャップを詳細に分析し、深みのある解説を出力してください。
 
 【出力要件】
@@ -153,11 +152,11 @@ const response = await openai.chat.completions.create({
    - ② ユーザーの3つのエピソードから読み取れる無意識と顕在意識の具体的ギャップ
 3.あなたはユング心理学に基づき、ユーザーのアーキタイプ、並びにフロイト心理学に基づき防衛機制を分析する専門家です。アーキタイプとは、ユーザーの性格そのものを表しているのではなく、
 人生において選びがちな役割・物語性を表しています。以下に６つのアーキタイプの「欲望」「恐れ」「得意な役回り」を整理するので該当するものを出力してください。
-「無垢」欲望：幸福でいたい、世界を信じたい　恐れ：罰を受けること、見捨てられること、世界が残酷であること　得意な役回り：物語の序盤の主人公、守られる存在、理想主義者
-「恋人」欲望：親密さ、つながり、一体感を得たい　恐れ：孤独、拒絶、愛されないこと　得意な役回り：ロマンスの主人公、絆で物語を動かす存在、感情の中心
-「反逆者」欲望：既存のルールや権力を壊したい　恐れ：無力であること、体制に取り込まれること　得意な役回り：革命家、アウトロー、ダークヒーロー
-「創造者」欲望：新しいものを作りたい、ビジョンを形にしたい 恐れ：凡庸さ、創造力の枯渇、自分の作品に価値がないこと　得意な役回り：発明家、芸術家、「新しい何か」を提案する存在
-「賢者」欲望：真実を知り、知識で世界を理解したい 恐れ：無知、騙されること、真実にたどり着けないこと　得意な役回り：師匠、参謀、謎を解く探偵
+「無垢」欲望：幸福でいたい、世界を信じたい 恐れ：罰を受けること、見捨てられること、世界が残酷であること 得意な役回り：物語の序盤の主人公、守られる存在、理想主義者
+「恋人」欲望：親密さ、つながり、一体感を得たい 恐れ：孤独、拒絶、愛されないこと 得意な役回り：ロマンスの主人公、絆で物語を動かす存在、感情の中心
+「反逆者」欲望：既存のルールや権力を壊したい 恐れ：無力であること、体制に取り込まれること 得意な役回り：革命家、アウトロー、ダークヒーロー
+「創造者」欲望：新しいものを作りたい、ビジョンを形にしたい 恐れ：凡庸さ、創造力の枯渇、自分の作品に価値がないこと 得意な役回り：発明家、芸術家、「新しい何か」を提案する存在
+「賢者」欲望：真実を知り、知識で世界を理解したい 恐れ：無知、騙されること、真実にたどり着けないこと 得意な役回り：師匠、参謀、謎を解く探偵
 「英雄」欲望：困難を克服して自分の価値を証明したい恐れ：弱さ、無力感、逃げること 得意な役回り：主人公、切り込み隊長、犠牲を厭わない仲間
 4.ユーザーに最も合致する防衛機制を以下の四種類から一つ選択して出力してください
 「合理化」失敗や望ましくない結果に「もっともらしい理由」をつけて納得しようとすることです。例：「試験に落ちたのは問題が悪いからだ」。
@@ -165,43 +164,56 @@ const response = await openai.chat.completions.create({
 「反動形成」本当の気持ちとは逆の言動をとることです。例：好きな人にわざと冷たくする。
 「逃避」直面したくない現実や不安から目をそらし、別の行動に打ち込むことで心を守る働きです。例：試験勉強をしなければならないのに、一日中ゲームに没頭してしまう。
 
-
-
-
 【JSONフォーマット】
 {
-  "shadow": "アーキタイプとして、"創造主", "ヒーロー", "アニマ", "賢者", "破壊者", "孤児" の6つから最も該当する1つを選択。
+  "shadow": "アーキタイプとして、\\"創造主\\", \\"ヒーロー\\", \\"アニマ\\", \\"賢者\\", \\"破壊者\\", \\"孤児\\" の6つから最も該当する1つを選択。",
   "shadowDescription": "原型の意味解説＋ユーザーの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
-  "primaryDefense": "defenseScoresで最も数値が高い防衛機制の日本語名（"合理化", "投影", "反動形成", "逃避" のいずれか）
+  "primaryDefense": "defenseScoresで最も数値が高い防衛機制の日本語名（\\"合理化\\", \\"投影\\", \\"反動形成\\", \\"逃避\\" のいずれか）",
   "defenseDescription": "優位な防衛機制の意味解説＋その結論に至るまでの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
   "defenseScores": {
-    "rationalization": 85, // 10〜95の範囲で差をつける
+    "rationalization": 85,
     "repression": 45,
     "reactionFormation": 30,
     "displacement": 60
   }
 }`
-    },
-    {
-      role: "user",
-      content: `以下の3回分のデータを深く洞察し、JSONフォーマットで回答してください:\n${formattedData}`
-    }
-  ],
-  temperature: 0.7,
-  response_format: { type: "json_object" }
-});
+        },
+        {
+          role: "user",
+          content: `以下の3回分のデータを深く洞察し、JSONフォーマットで回答してください:\n${formattedData}`
+        }
+      ],
+      temperature: 0.7,
+      response_format: { type: "json_object" }
+    });
 
     const analysisResult = JSON.parse(response.choices[0].message.content);
+
+    // 💡 グラフスコア（defenseScores）の最大値を判定し、primaryDefenseを完全一致させる
+    const scores = analysisResult.defenseScores || { rationalization: 50, repression: 40, reactionFormation: 30, displacement: 40 };
+    const scoreMap = [
+      { name: "合理化", score: scores.rationalization || 0 },
+      { name: "投影", score: scores.repression || 0 },
+      { name: "反動形成", score: scores.reactionFormation || 0 },
+      { name: "逃避", score: scores.displacement || 0 },
+    ];
+    scoreMap.sort((a, b) => b.score - a.score);
+    const topDefenseName = scoreMap[0].name;
+
+    const finalData = {
+      ...analysisResult,
+      primaryDefense: topDefenseName // グラフで最も高い項目名を必ず採用
+    };
 
     // フロントエンドに返却
     res.json({
       success: true,
       analyzedAt: new Date().toISOString(),
-      data: analysisResult
+      data: finalData
     });
 
   } catch (error) {
-    console.error("Deep Analysis ERROR:", error);
+    console.error("Deep Analysis ERROR:", error); 
     res.status(500).json({ 
       error: '深層分析処理に失敗しました。', 
       details: error.message 

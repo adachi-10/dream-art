@@ -14,6 +14,7 @@ export default function Explanation() {
           <div className="explanation-text-area">
             <h3 className="explanation-step-title">１ 夢分析</h3>
             <h4 className="explanation-step-desc">
+              Dream artは、夢から気軽に自己の内面を理解し、深ぼることを目的としたツールです。
               夢の記憶を言葉にすることで分析が開始され、あなたの深層心理が3Dアートとして表現されます。夢の中に抑圧された無意識の叫びがあるという考えをもとにしたユングの夢分析方法を参考にしています。
             </h4>
           </div>
@@ -36,6 +37,7 @@ export default function Explanation() {
             <h3 className="explanation-step-title">２ 深層分析</h3>
             <h4 className="explanation-step-desc">
               結果と共に出てくる二つの質問に答えることでよりあなたの輪郭を明確にする深層分析が解放されます。分析は３回質問に答えるごとに行われ、分析結果は５回まで内容が保持されます。
+              ※結果は参考程度に収め、自己分析の手助けとしてください
             </h4>
           </div>
           {/* 右端：1920x1080 (16:9) 画像差し込み枠 */}

@@ -18,7 +18,7 @@
 
 .dream-analyzer-container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px 16px 60px;
   display: flex;
@@ -28,9 +28,7 @@
   box-sizing: border-box;
 }
 
-/* ============================================
-   入力セクション
-   ============================================ */
+/* 入力エリア */
 .input-section {
   width: 100%;
   max-width: 800px;
@@ -56,7 +54,6 @@
   outline: none;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: border-color var(--da-ease), background var(--da-ease);
   box-sizing: border-box;
 }
 
@@ -65,58 +62,35 @@
   font-style: italic;
 }
 
-.dream-input:focus {
-  border-color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.35);
-}
-
 .button-group {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
 }
 
-.analyze-btn,
-.clear-btn {
+.analyze-btn, .clear-btn {
   padding: 11px 28px;
   background: var(--da-btn-bg);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: var(--da-radius-pill);
-  font-family: var(--da-font);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   backdrop-filter: blur(6px);
   transition: all var(--da-ease);
-  box-sizing: border-box;
 }
 
-.analyze-btn:hover:not(:disabled),
-.clear-btn:hover:not(:disabled) {
+.analyze-btn:hover:not(:disabled), .clear-btn:hover:not(:disabled) {
   background: var(--da-btn-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(160, 120, 220, 0.35);
-}
-
-.analyze-btn:disabled,
-.clear-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .loading {
   text-align: center;
   font-size: 14px;
   color: var(--da-text-sub);
-  letter-spacing: 0.1em;
   padding: 12px 0;
-  animation: daPulse 1.6s ease-in-out infinite;
-}
-
-@keyframes daPulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
 }
 
 .error-box {
@@ -125,32 +99,31 @@
   border-radius: var(--da-radius-md);
   padding: 12px 16px;
   color: var(--da-text-main);
-  font-size: 14px;
 }
 
-/* ============================================
-   結果カード本体（PC・スマホ両対応）
-   ============================================ */
+/* ==========================================================================
+   夢分析結果カード（動画エリアを約15%拡大）
+   ========================================================================== */
 .result-section {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 20px auto 0 auto;
-  padding: 30px 20px;
-  border-radius: 20px;
+  padding: 36px 24px;
+  border-radius: 24px;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.05); 
+  background: rgba(255, 255, 255, 0.08); 
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   transition: background-color 0.5s ease; 
 }
 
-/* 3Dモデル表示エリア */
+/* 💡 動画表示エリア：従来の600pxから約15%拡大（PC: 700px、スマホ: 340px） */
 .model-section {
   width: 100%;
   max-width: 1000px;
-  height: clamp(260px, 45vw, 600px); /* 画面幅に合わせて滑らかに縮小 */
-  margin: 0 auto 20px auto; 
+  height: clamp(340px, 52vw, 700px);
+  margin: 0 auto 24px auto; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -165,7 +138,7 @@
 }
 
 .keyword-tag {
-  font-size: clamp(40px, 10vw, 80px) !important; /* スマホなら縮小、PCなら大きく */
+  font-size: clamp(48px, 11vw, 90px) !important;
   color: #ffffff !important;
   font-family: "Yu Mincho", "YuMincho", "MS Mincho", serif !important;
   font-weight: 700;
@@ -183,7 +156,7 @@
   font-size: clamp(15px, 2.5vw, 18px) !important;
   color: #ffffff !important;
   font-family: "Yu Mincho", "YuMincho", "MS Mincho", serif !important;
-  line-height: 1.9;
+  line-height: 2.0;
   letter-spacing: 0.06em;
   white-space: pre-wrap;
   word-break: break-word;
@@ -194,7 +167,7 @@
 /* 内省フォーム */
 .reflection-card {
   width: 100%;
-  margin: 30px auto 0 auto;
+  margin: 36px auto 0 auto;
   padding: 10px 0;
   box-sizing: border-box;
 }
@@ -217,19 +190,18 @@
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 8px;
-  line-height: 1.5;
 }
 
 .reflection-textarea {
   width: 100%;
-  min-height: 110px;
-  padding: 14px 16px;
-  font-size: 14px;
+  min-height: 120px;
+  padding: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--da-text-main);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 16px;
   outline: none;
   resize: vertical;
@@ -238,11 +210,11 @@
 
 .reflection-btn-container {
   text-align: right;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .reflection-save-btn {
-  padding: 12px 28px;
+  padding: 12px 30px;
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
@@ -250,7 +222,6 @@
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: var(--da-radius-pill);
   cursor: pointer;
-  width: auto;
 }
 
 .custom-footer-message {
@@ -267,32 +238,41 @@
   line-height: 1.7;
 }
 
-/* ============================================
-   深層分析結果カード
-   ============================================ */
+/* ==========================================================================
+   深層分析結果カード（UI構造・解説カードの刷新）
+   ========================================================================== */
 .deep-analysis-card {
   width: 100%;
-  max-width: 900px;
+  max-width: 960px;
   margin: 20px auto;
   background: #3a3d4a;
-  border-radius: 20px;
-  padding: clamp(20px, 4vw, 40px);
+  border-radius: 24px;
+  padding: clamp(24px, 4vw, 44px);
   box-sizing: border-box;
   color: #ffffff;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.deep-analysis-header {
+  text-align: center;
+  font-size: clamp(26px, 5vw, 36px);
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #ffffff;
 }
 
 .deep-section-title {
-  font-size: clamp(18px, 3.5vw, 22px);
+  font-size: clamp(20px, 3.5vw, 24px);
   font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
+  color: #ffffff;
 }
 
 .deep-shadow-section {
-  padding-bottom: 24px;
+  padding-bottom: 30px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .deep-shadow-container {
@@ -304,15 +284,16 @@
 }
 
 .deep-shadow-name {
-  font-size: clamp(22px, 5vw, 30px);
+  font-size: clamp(24px, 5vw, 32px);
   font-weight: 700;
+  color: #ffffff;
 }
 
 .deep-shadow-desc {
-  font-size: 14px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.85);
-  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 760px;
 }
 
 .deep-defense-section {
@@ -324,121 +305,127 @@
 
 .deep-chart-container {
   width: 100%;
-  max-width: 320px;
-  height: 260px;
+  max-width: 360px;
+  height: 280px;
 }
 
 .deep-defense-info {
   text-align: center;
+  max-width: 760px;
 }
 
 .deep-defense-title {
-  font-size: clamp(20px, 4vw, 26px);
+  font-size: clamp(22px, 4vw, 28px);
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .deep-defense-desc {
-  font-size: 14px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.85);
-  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.9);
 }
 
+/* ==========================================================================
+   💡 用語解説（白いすりガラスパネルで独立して囲む）
+   ========================================================================== */
+.glossary-section {
+  width: 100%;
+  max-width: 960px;
+  margin: 36px auto 0 auto;
+  box-sizing: border-box;
+}
+
+.glossary-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.shadow-glossary-card {
+  background: rgba(255, 255, 255, 0.12); /* 白いすりガラス */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 24px 30px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.shadow-glossary-card h4 {
+  margin: 0 0 10px 0;
+  font-size: 18px; /* h4 サイズ */
+  font-weight: 700;
+  color: #ffffff !important; /* 白色フォント */
+  letter-spacing: 0.05em;
+}
+
+.shadow-glossary-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #ffffff !important; /* 💡 完全な白色フォント */
+  letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   💡 防衛機制の基礎解説（PCで確実に「縦2 × 横2」にする設定）
+   ========================================================================== */
 .defense-glossary-section {
   width: 100%;
-  margin: 30px auto 10px;
-  padding-top: 20px;
+  max-width: 960px;
+  margin: 36px auto 10px;
+  padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   box-sizing: border-box;
 }
 
+.defense-glossary-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .defense-glossary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(2, 1fr) !important; /* 💡 PCで確実に2列×2行固定 */
+  gap: 20px;
 }
 
 .defense-glossary-item {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12); /* 白いすりガラス */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 20px 24px;
+  border-radius: 16px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .defense-glossary-item h4 {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  color: #fff;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff !important; /* 白色フォント */
 }
 
 .defense-glossary-item p {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-/* ==========================================================================
-   深層分析：データ未蓄積時のすりガラス・ネイビーカード
-   ========================================================================== */
-.deep-empty-card {
-  width: 100%;
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 50px 24px;
-  box-sizing: border-box;
-  text-align: center;
-  
-  /* 深いネイビーのグラデーション ＋ すりガラス */
-  background: linear-gradient(135deg, rgba(20, 30, 55, 0.75), rgba(15, 20, 40, 0.88));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(130, 170, 230, 0.25);
-  border-radius: 24px;
-  box-shadow: 0 16px 40px rgba(5, 10, 25, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-}
-
-.deep-empty-icon {
-  font-size: 28px;
-  color: #82aaff;
-  margin-bottom: 12px;
-  text-shadow: 0 0 12px rgba(130, 170, 255, 0.6);
-}
-
-.deep-empty-title {
-  font-size: clamp(20px, 3.5vw, 24px);
-  font-weight: 700;
-  color: #dce7fa;
-  margin-bottom: 16px;
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.deep-empty-subtitle {
-  font-size: clamp(13px, 2.2vw, 15px);
-  font-weight: 400;
-  color: rgba(220, 235, 255, 0.85);
-  line-height: 1.85;
-  margin-bottom: 24px;
-  letter-spacing: 0.03em;
-}
-
-/* 進行状況バッジ */
-.deep-empty-progress {
-  display: inline-block;
-  padding: 8px 20px;
-  background: rgba(130, 170, 230, 0.12);
-  border: 1px solid rgba(130, 170, 230, 0.3);
-  border-radius: 999px;
   font-size: 13px;
-  color: rgba(220, 235, 255, 0.9);
-  letter-spacing: 0.05em;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.95) !important; /* 見やすい明るい白文字 */
 }
 
-.deep-empty-count {
-  font-size: 16px;
-  font-weight: 700;
-  color: #82aaff;
+/* スマホ表示のみ1列に切り替え */
+@media screen and (max-width: 768px) {
+  .defense-glossary-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

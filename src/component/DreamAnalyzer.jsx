@@ -41,16 +41,11 @@ const SHADOW_DESCRIPTIONS = {
 
 const ARCHETYPE_IMAGES = {
   "創造者": "/images/archetypes/creator.png",
-  "創造主": "/images/archetypes/creator.png",
   "英雄": "/images/archetypes/hero.png",
-  "ヒーロー": "/images/archetypes/hero.png",
   "恋人": "/images/archetypes/lover.png",
-  "アニマ": "/images/archetypes/lover.png",
   "賢者": "/images/archetypes/sage.png",
   "反逆者": "/images/archetypes/rebel.png",
-  "破壊者": "/images/archetypes/rebel.png",
-  "無垢": "/images/archetypes/innocent.png",
-  "孤児": "/images/archetypes/innocent.png",
+  "無垢": "/images/archetypes/innocent.png"
 };
 
 // ResultCard コンポーネント
