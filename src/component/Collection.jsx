@@ -11,7 +11,7 @@ const BACKGROUND_COLORS = {
   "恐怖": "#222222"
 };
 
-// 💡 HEXカラーコードをすりガラス用に適した半透明RGBAに変換するヘルパー関数
+// HEXカラーコードをすりガラス用に適した半透明RGBAに変換するヘルパー関数
 const hexToRgba = (hex, alpha = 0.65) => {
   if (!hex) return `rgba(82, 86, 110, ${alpha})`;
   let c = hex.replace("#", "");
@@ -36,19 +36,6 @@ const ALL_MODELS = [
   { key: "象徴8", isUpcoming: true },
   { key: "象徴9", isUpcoming: true },
 ];
-
-// ⭕ 枠内に綺麗に収まる指定
-<video
-  src={videoUrl}
-  controls
-  playsInline
-  style={{
-    width: "100%",
-    maxWidth: "100%",
-    height: "auto",
-    objectFit: "contain"
-  }}
-/>
 
 export default function Collection({ unlockedKeys = [] }) {
   const [selectedModel, setSelectedModel] = useState(null);
@@ -89,7 +76,6 @@ export default function Collection({ unlockedKeys = [] }) {
             !model.isUpcoming && 
             unlockedKeys.some(k => String(k).trim() === model.key);
 
-          // 💡 解放済みモデルに対応する背景カラー（すりガラス用RGBA）を取得
           const baseColor = BACKGROUND_COLORS[model.key];
           const unlockedStyle = isUnlocked ? {
             background: `linear-gradient(135deg, ${hexToRgba(baseColor, 0.75)}, ${hexToRgba(baseColor, 0.45)})`,
@@ -103,7 +89,6 @@ export default function Collection({ unlockedKeys = [] }) {
               onClick={() => handleCardClick(model, isUnlocked)}
             >
               {isUnlocked ? (
-                /* 解放済みモデルの写真 */
                 <img
                   src={model.image}
                   alt={model.key}
@@ -113,7 +98,6 @@ export default function Collection({ unlockedKeys = [] }) {
                   }}
                 />
               ) : (
-                /* 未解放モデルの「？」マーク */
                 <div className="locked-circle">
                   <span className="locked-question-mark">？</span>
                 </div>
@@ -142,6 +126,13 @@ export default function Collection({ unlockedKeys = [] }) {
                 loop
                 muted
                 playsInline
+                style={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  height: "auto",
+                  maxHeight: "600px",
+                  objectFit: "contain"
+                }}
               />
             </div>
 
