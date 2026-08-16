@@ -22,22 +22,14 @@ const BACKGROUND_COLORS = {
 };
 
 const DYNAMIC_QUESTIONS = {
-  "死": "今、終わらせたいこと、終わってほしいことなどはありますか？",
+  "死": "最近終わったことや、終わってほしいことなどはありますか？",
   "生": "最近始めたことや、新しく始めたいことはありますか？",
-  "欲望": "本当は手に入れたいのに、見ないふりをしている望みはありますか？",
-  "社交": "周りの人との関係で、性格や感情を演じている部分はありますか？",
+  "欲望": "見ないふりをしている望みや、叶った望みはありますか？",
+  "社交": "人間関係の快不快や、関係において性格や感情を演じている部分はありますか？",
   "恐怖": "今、避けて通りたいと感じている不安やプレッシャーはありますか？",
   "自由": "日常の中で、もっと解き放ちたいと感じている制約はありますか？"
 };
 
-const SHADOW_DESCRIPTIONS = {
-  "ヒーロー": "隠れた潜在能力を発揮することを恐れ、生み出されることへの葛藤を抱えています。周囲の過度な期待や自分自身の完璧主義に応えようとするあまり、本当の自分を犠牲にしている可能性があります。",
-  "トリックスター": "既存のルールや常識を打ち破りたいという無意識の欲求が高まっています。抑圧されたユーモアや破壊的創造力が解放を求めています。",
-  "賢者": "物事の真理や知識を極めたい反面、現実の複雑な感情から逃避したい内面を表しています。",
-  "アニマ": "感性や直感、内なる女性性（または感受性）との統合を求めています。",
-  "孤児": "どこにも属せない孤独感や、自立への恐れと望みが複雑に交錯しています。",
-  "破壊者": "不要になった執着や過去の自分をリセットし、新しいスタートを切りたい強い衝動の現れです。"
-};
 
 const ARCHETYPE_IMAGES = {
   "創造者": "/images/archetypes/creator.png",
@@ -284,7 +276,7 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
   // 「深層分析」タブ表示モード
   if (activeTab === "deep") {
     const radarData = formatRadarChartData(latestAnalysis?.result?.defenseScores);
-    const transitionData = formatHistoryTransitionData(deepHistory);               
+    const transitionData = formatHistoryTransitionData(deepHistory);                
     const shadowKey = latestAnalysis?.result?.shadow;
 
     return (
@@ -322,31 +314,28 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
 
             {/* 2. メインのリザルトカード */}
             <div className="deep-analysis-card">
-              {/* 上段：アーキタイプ */}
-              {/* 上段：今のあなたのアーキタイプ（左：画像 / 右：テキスト） */}
-<div className="deep-shadow-section">
-  <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
-  
-  <div className="deep-shadow-container">
-    {/* 左半分：アーキタイプ画像 */}
-    <div className="deep-shadow-image-wrapper">
-      {ARCHETYPE_IMAGES[shadowKey] && (
-        <img 
-          src={ARCHETYPE_IMAGES[shadowKey]} 
-          alt={shadowKey} 
-          className="archetype-image"
-        />
-      )}
-    </div>
+              {/* 上段：アーキタイプ（左：画像 / 右：テキスト） */}
+              <div className="deep-shadow-section">
+                <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
+                
+                <div className="deep-shadow-container">
+                  <div className="deep-shadow-image-wrapper">
+                    {ARCHETYPE_IMAGES[shadowKey] && (
+                      <img 
+                        src={ARCHETYPE_IMAGES[shadowKey]} 
+                        alt={shadowKey} 
+                        className="archetype-image"
+                      />
+                    )}
+                  </div>
 
-    {/* 右半分：アーキタイプ名 ＋ 解説文 */}
-    <div className="deep-shadow-info">
-      <div className="deep-shadow-name">{shadowKey}</div>
-      <div className="deep-shadow-desc">
-        {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[shadowKey] || ""}
-      </div>
-    </div>
-  </div>
+                  <div className="deep-shadow-info">
+                    <div className="deep-shadow-name">{shadowKey}</div>
+                    <div className="deep-shadow-desc">
+                      {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[shadowKey] || ""}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* 下段：防衛機制 */}
@@ -412,13 +401,17 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
             </div>
           </>
         ) : (
-          <div className="deep-analysis-card" style={{ textAlign: "center", padding: "60px 20px" }}>
-            <h2 style={{ fontSize: "22px", marginBottom: "16px" }}>まだ深層分析データがありません</h2>
-            <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
-              夢分析を行った後、「内省の記録」を <strong>3回分</strong> 蓄積すると<br />
-              あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。<br />
-              （現在: <strong>{pendingCount} / 3</strong> 件蓄積済み）
-            </p>
+          /* 💡 データ未蓄積時のすりガラス・ネイビーカード */
+          <div className="deep-empty-card">
+            <div className="deep-empty-icon">✧</div>
+            <h2 className="deep-empty-title">まだ深層心理分析データがありません</h2>
+            <h3 className="deep-empty-subtitle">
+              夢分析を行った後、「内省の記録」を３回分蓄積すると<br />
+              あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。
+            </h3>
+            <div className="deep-empty-progress">
+              現在：<span className="deep-empty-count">{pendingCount}</span> / 3 件蓄積済み
+            </div>
           </div>
         )}
       </div>

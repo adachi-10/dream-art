@@ -269,33 +269,91 @@
   color: #ffffff;
 }
 
+/* ==========================================================================
+   アーキタイプエリア（PC：写真20px縮小 ＆ 文章エリア拡張・行間調整）
+   ========================================================================== */
 .deep-shadow-section {
-  padding-bottom: 30px;
+  padding-bottom: 36px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 30px;
+  margin-bottom: 36px;
 }
 
 .deep-shadow-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 40px !important; /* 写真と文章の間のスペースを確保 */
+  margin-top: 24px;
+}
+
+/* 左側：アーキタイプ写真（20px小さく調整: 240px -> 220px） */
+.deep-shadow-image-wrapper {
+  flex: 0 0 220px !important;
+  width: 220px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.archetype-image {
+  width: 220px !important;
+  max-width: 220px !important;
+  height: auto !important;
+  border-radius: 16px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+}
+
+/* 右側：文章情報エリア（幅を最大限広く使い、0.5行分ゆったりした間隔に） */
+.deep-shadow-info {
+  flex: 1 !important;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 16px !important; /* タイトルと説明文の間隔を0.5行分拡張 */
 }
 
 .deep-shadow-name {
-  font-size: clamp(24px, 5vw, 32px);
+  font-size: clamp(24px, 3.5vw, 30px) !important;
   font-weight: 700;
   color: #ffffff;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
 }
 
 .deep-shadow-desc {
-  font-size: 15px;
-  line-height: 1.85;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 760px;
+  font-size: 15px !important;
+  line-height: 2.1 !important; /* 💡 行間を広げて読みやすく（約0.5行分拡張） */
+  color: rgba(255, 255, 255, 0.92) !important;
+  letter-spacing: 0.04em;
+  word-break: break-word;
 }
 
+/* 📱 スマホ画面（768px以下） */
+@media screen and (max-width: 768px) {
+  .deep-shadow-container {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  .deep-shadow-image-wrapper {
+    flex: none !important;
+    width: 170px !important;
+  }
+
+  .archetype-image {
+    width: 170px !important;
+    max-width: 170px !important;
+  }
+
+  .deep-shadow-info {
+    align-items: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+}
 .deep-defense-section {
   display: flex;
   flex-direction: column;

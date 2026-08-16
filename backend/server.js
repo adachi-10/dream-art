@@ -61,7 +61,7 @@ app.post('/api/dream/analyze', async (req, res) => {
 3. 「欲望」: シャドウ（抑圧された本能・欲求）の活性化、認めがたい情動やリビドーの表出。
 4. 「社交」: ペルソナ（社会的役割・仮面）の過剰適応、他者の目や集団秩序との摩擦。
 5. 「自由」: 既存のエゴ（自我）の枠組みからの超越、制約からの解放、アニマ/アニムス的な拡大。
-6. 「恐怖」: コンプレックスの刺激、無意識下の未知の領域（暗雲・脅威）との遭遇と回避衝動。
+6. 「恐怖」: コンプレックスの刺激、行動・現状を変えることへの忌避感。
 
 夢の内容：${text}`,
         },
@@ -112,7 +112,7 @@ app.post('/api/dream/analyze', async (req, res) => {
   }
 });
 
-/// ==========================================================================
+// ==========================================================================
 // 深層分析エンドポイント（3回分の夢＋内省ログからシャドウと防衛機制を分析）
 // ==========================================================================
 app.post('/api/dream/deep-analyze', async (req, res) => {
@@ -158,21 +158,32 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
 「創造者」欲望：新しいものを作りたい、ビジョンを形にしたい 恐れ：凡庸さ、創造力の枯渇、自分の作品に価値がないこと 得意な役回り：発明家、芸術家、「新しい何か」を提案する存在
 「賢者」欲望：真実を知り、知識で世界を理解したい 恐れ：無知、騙されること、真実にたどり着けないこと 得意な役回り：師匠、参謀、謎を解く探偵
 「英雄」欲望：困難を克服して自分の価値を証明したい 恐れ：弱さ、無力感、逃げること 得意な役回り：主人公、切り込み隊長、犠牲を厭わない仲間
-4. 第1回〜第3回の各エピソードにおいて、以下の4つの防衛機制が働いているか（感知されたか）を true / false で客観的に判定してください。
+4. 第1回〜第3回の各エピソードにおいて、以下の4つの防衛機制が働いているか（感知されたか）を客観的かつ厳格に判定し、それぞれ true または false を指定してください。特定の防衛機制に偏らせず、以下の判定基準に厳密に従ってください。
+
 「合理化」失敗や望ましくない結果に「もっともらしい理由」をつけて納得しようとすることです。
+※夢の内容や分析結果に対して、理屈を用いて否定的な態度をとるなど、「～だから」を多用している場合には合理化の態度である可能性が高いです。
+
 「投影」自分の中にある感情や弱点を、他人にあると感じることです。
+※文脈において必要不可欠である場合を除き、自分以外の第三者の話題がでてくる、それを主軸にしているユーザーにはこの防衛機制が潜んでいる可能性が高いです。
+
 「反動形成」本当の気持ちとは逆の言動をとることです。
+※夢分析によって導き出された内容と、ユーザーの内省の記録に乖離がある（特にq1において）場合はこの可能性が高いです。また、三回の分析において、ユーザーの発言に矛盾が見られる場合もこの防衛機制が働いている可能性があります。
+
 「逃避」直面したくない現実や不安から目をそらし、別の行動に打ち込むことで心を守る働きです。
+※q1とq2の内容において矛盾が見られたり、質問に対する回答が10~20文字と短く核心をつかない発言が続く場合はこの防衛機制が働いている可能性が高いです。
+
+【用語の制約】
+防衛機制の名称には「合理化」「投影」「反動形成」「逃避」の4つのみを使用してください。「置き換え」などの別名は使用しないでください。
 
 【JSONフォーマット】
 {
   "shadow": "「無垢」「恋人」「反逆者」「創造者」「賢者」「英雄」の中から最も該当する1つ",
   "shadowDescription": "原型の意味解説＋ユーザーの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
-  "defenseDescription": "感知された防衛機制の意味解説＋その結論に至るまでの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
+  "defenseDescription": "感知された防衛機制（合理化・投影・反動形成・逃避のいずれか）の意味解説＋その結論に至るまでの具体的分析＋アドバイスを含め、必ず120文字以上150文字未満で出力した文章",
   "detectedDefenses": [
-    { "episode": 1, "rationalization": true, "repression": false, "reactionFormation": false, "displacement": true },
-    { "episode": 2, "rationalization": false, "repression": false, "reactionFormation": true, "displacement": false },
-    { "episode": 3, "rationalization": true, "repression": false, "reactionFormation": false, "displacement": true }
+    { "episode": 1, "rationalization": boolean, "repression": boolean, "reactionFormation": boolean, "displacement": boolean },
+    { "episode": 2, "rationalization": boolean, "repression": boolean, "reactionFormation": boolean, "displacement": boolean },
+    { "episode": 3, "rationalization": boolean, "repression": boolean, "reactionFormation": boolean, "displacement": boolean }
   ]
 }`
         },
@@ -181,7 +192,7 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
           content: `以下の3回分のデータを深く洞察し、JSONフォーマットで回答してください:\n${formattedData}`
         }
       ],
-      temperature: 0.7,
+      temperature: 0.75,
       response_format: { type: "json_object" }
     });
 
@@ -202,7 +213,9 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
 
     episodes.forEach((ep) => {
       defenseKeys.forEach((key) => {
-        if (ep[key] === true) {
+        const val = ep[key];
+        // 真偽値（true）または文字列（"true"）の両方に対応
+        if (val === true || val === "true") {
           scores[key] += 30; // 感知された場合
         } else {
           scores[key] += 10; // 感知されなかった場合
@@ -233,7 +246,7 @@ app.post('/api/dream/deep-analyze', async (req, res) => {
       .filter(([_, score]) => score === maxScore)
       .map(([key, _]) => defenseNameMap[key]);
 
-    // 見出しテキスト（単数なら「合理化」、複数なら「合理化 / 逃避」）
+    // 見出しテキスト（単数なら「合理化」、複数なら「合理化 / 投影」など）
     const primaryDefenseTitle = topDefenses.join(" / ");
 
     const finalData = {
