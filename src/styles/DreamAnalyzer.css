@@ -864,31 +864,5 @@
     font-size: 0.95rem !important;
   }
 
-  /* 深層分析（アーキタイプ・防衛機制）カード */
-  .deep-analysis-card {
-    width: 95% !important;
-    margin: 16px auto !important;
-    padding: 20px 14px !important;
-    box-sizing: border-box !important;
-  }
-
-  .deep-shadow-container {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-
-  .deep-defense-section {
-    flex-direction: column !important;
-  }
-
-  .deep-chart-container {
-    width: 100% !important;
-    height: 240px !important;
-  }
-
-  .defense-glossary-grid {
-    grid-template-columns: 1fr !important; /* 1列並びに変換 */
-    gap: 12px !important;
-  }
+  
 }
