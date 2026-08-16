@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+// src/hooks/useDeepAnalysisStorage.js の先頭に追加
+const API_BASE_URL = import.meta.env.PROD
+  ? "https://dream-art.onrender.com"
+  : "http://localhost:5000";
 const STORAGE_KEY_PENDING = "dream_art_pending_sessions";
 const STORAGE_KEY_HISTORY = "dream_art_deep_history";
 
@@ -55,7 +59,7 @@ const executeDeepAnalysis = async (sessionsToAnalyze) => {
     setIsAnalyzing(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/deep-analyze", {
+      const response = await fetch(`${API_BASE_URL}/api/dream/deep-analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessions: sessionsToAnalyze }),

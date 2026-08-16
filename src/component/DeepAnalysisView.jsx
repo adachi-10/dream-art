@@ -23,9 +23,9 @@ export default function DeepAnalysisView() {
   if (!latestAnalysis) {
     return (
       <div className="deep-analysis-card" style={{ textAlign: "center", padding: "60px 20px" }}>
-        <h2 style={{ fontSize: "22px", marginBottom: "16px" }}>まだ深層分析データがありません</h2>
+        <h2 style={{ fontSize: "22px", marginBottom: "16px" , color: "rgba(255,255,255,0.7)"}}>まだ深層分析データがありません</h2>
         <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
-          夢分析を行った後、「内省の記録」を **3回分** 蓄積すると<br />
+          夢分析を行った後、「内省の記録」を３回分蓄積すると<br />
           あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。<br />
           （現在: <strong>{pendingCount} / 3</strong> 件蓄積済み）
         </p>
