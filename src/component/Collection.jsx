@@ -37,7 +37,20 @@ const ALL_MODELS = [
   { key: "象徴9", isUpcoming: true },
 ];
 
-export default function Collection({ unlockedKeys = ["生"] }) {
+// ⭕ 枠内に綺麗に収まる指定
+<video
+  src={videoUrl}
+  controls
+  playsInline
+  style={{
+    width: "100%",
+    maxWidth: "100%",
+    height: "auto",
+    objectFit: "contain"
+  }}
+/>
+
+export default function Collection({ unlockedKeys = [] }) {
   const [selectedModel, setSelectedModel] = useState(null);
   const audioRef = useRef(null);
 
