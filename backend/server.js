@@ -115,7 +115,7 @@ app.post('/api/dream/analyze', async (req, res) => {
 // ==========================================================================
 // 深層分析エンドポイント（3回分の夢＋内省ログからシャドウと防衛機制を分析）
 // ==========================================================================
-app.post('/api/deep-analyze', async (req, res) => {
+app.post('/api/dream/deep-analyze', async (req, res) => {
   try {
     const { sessions } = req.body; // 3回分の { dream, summary, keyword, q1Response, q2Response }
 
