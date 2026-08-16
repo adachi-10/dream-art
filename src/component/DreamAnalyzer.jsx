@@ -39,7 +39,21 @@ const SHADOW_DESCRIPTIONS = {
   "破壊者": "不要になった執着や過去の自分をリセットし、新しいスタートを切りたい強い衝動の現れです。"
 };
 
-// ResultCard コンポーネント（コンポーネント外部定義）
+const ARCHETYPE_IMAGES = {
+  "創造者": "/images/archetypes/creator.png",
+  "創造主": "/images/archetypes/creator.png",
+  "英雄": "/images/archetypes/hero.png",
+  "ヒーロー": "/images/archetypes/hero.png",
+  "恋人": "/images/archetypes/lover.png",
+  "アニマ": "/images/archetypes/lover.png",
+  "賢者": "/images/archetypes/sage.png",
+  "反逆者": "/images/archetypes/rebel.png",
+  "破壊者": "/images/archetypes/rebel.png",
+  "無垢": "/images/archetypes/innocent.png",
+  "孤児": "/images/archetypes/innocent.png",
+};
+
+// ResultCard コンポーネント
 const ResultCard = ({ 
   item, 
   isHistory = false, 
@@ -142,7 +156,6 @@ const ResultCard = ({
   );
 };
 
-
 export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showHistoryOnly, activeTab }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -174,20 +187,17 @@ export default function DreamAnalyzer({ onAnalyzeSuccess, currentModelKey, showH
     }
   }, [result, historyIndex]);
 
-  // 夢分析処理
   const analyzeDream = async () => {
     if (!text.trim()) return;
     setLoading(true);
     setResult(null);
 
     try {
-
-// 💡 修正後
-const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ dreamContent: text }),
-});
+      const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dreamContent: text }),
+      });
 
       if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
@@ -208,7 +218,6 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
         onAnalyzeSuccess(normalized.modelKeys);
       }
 
-      // コレクション用に解放済みキーワードをローカルストレージへ保存
       try {
         const newKey = normalized.modelKeys[0];
         if (newKey) {
@@ -240,7 +249,6 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
     }
   };
 
-  // 内省ログ保存処理
   const handleSaveReflection = async () => {
     if (!q1.trim() || !q2.trim()) return;
 
@@ -282,14 +290,7 @@ const response = await fetch(`${API_BASE_URL}/api/dream/analyze`, {
   if (activeTab === "deep") {
     const radarData = formatRadarChartData(latestAnalysis?.result?.defenseScores);
     const transitionData = formatHistoryTransitionData(deepHistory);               
-const ARCHETYPE_IMAGES = {
-  "創造者": "/images/archetypes/creator.png",
-  "英雄": "/images/archetypes/hero.png",
-  "恋人": "/images/archetypes/lover.png",
-  "賢者": "/images/archetypes/sage.png",
-  "反逆者": "/images/archetypes/rebel.png",
-  "無垢": "/images/archetypes/innocent.png",
-};
+    const shadowKey = latestAnalysis?.result?.shadow;
 
     return (
       <div className="dream-analyzer-container">
@@ -299,7 +300,7 @@ const ARCHETYPE_IMAGES = {
           <div className="loading">深層心理（アーキタイプ・防衛機制）を統合解析中...</div>
         ) : latestAnalysis ? (
           <>
-            {/* 1. 複数回の分析による変化の推移グラフ */}
+            {/* 1. 推移グラフ */}
             {transitionData.length >= 2 && (
               <div className="deep-analysis-card" style={{ marginBottom: "30px" }}>
                 <h2 className="deep-section-title">防衛機制の移り変わり（過去{transitionData.length}回の推移）</h2>
@@ -326,41 +327,36 @@ const ARCHETYPE_IMAGES = {
 
             {/* 2. メインのリザルトカード */}
             <div className="deep-analysis-card">
-              {/* 上段：今のあなたのアーキタイプ */}
+              {/* 上段：アーキタイプ */}
               <div className="deep-shadow-section">
                 <h2 className="deep-section-title">今のあなたのアーキタイプ</h2>
-                <div className="deep-shadow-container">
-                  <div className="deep-image-placeholder"></div>
+                <div className="deep-shadow-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+                  {ARCHETYPE_IMAGES[shadowKey] && (
+                    <img 
+                      src={ARCHETYPE_IMAGES[shadowKey]} 
+                      alt={shadowKey} 
+                      className="archetype-image"
+                      style={{ width: "160px", height: "auto", borderRadius: "8px", objectFit: "contain" }}
+                    />
+                  )}
                   
-                  <div className="deep-shadow-info">
-                    <div className="deep-shadow-name">{latestAnalysis.result.shadow}</div>
+                  <div className="deep-shadow-info" style={{ textAlign: "center" }}>
+                    <div className="deep-shadow-name" style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "8px" }}>
+                      {shadowKey}
+                    </div>
                     <div className="deep-shadow-desc">
-                      {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[latestAnalysis.result.shadow] || SHADOW_DESCRIPTIONS["ヒーロー"]}
+                      {latestAnalysis.result.shadowDescription || SHADOW_DESCRIPTIONS[shadowKey] || SHADOW_DESCRIPTIONS["ヒーロー"]}
                     </div>
                   </div>
                 </div>
               </div>
 
-// レンダリング箇所（深層分析結果カード内）
-<div className="archetype-result-card">
-  <h3>あなたのアーキタイプ: {deepData.shadow}</h3>
-  {ARCHETYPE_IMAGES[deepData.shadow] && (
-    <img 
-      src={ARCHETYPE_IMAGES[deepData.shadow]} 
-      alt={deepData.shadow} 
-      className="archetype-image"
-      style={{ width: "160px", height: "auto", margin: "12px auto", display: "block" }}
-    />
-  )}
-  <p className="archetype-description">{deepData.shadowDescription}</p>
-</div>
-
-              {/* 下段：今のあなたの防衛機制 */}
-              <div className="deep-defense-section-container">
+              {/* 下段：防衛機制 */}
+              <div className="deep-defense-section-container" style={{ marginTop: "32px" }}>
                 <h2 className="deep-section-title">今のあなたの防衛機制</h2>
                 
                 <div className="deep-defense-section">
-                  <div className="deep-chart-container">
+                  <div className="deep-chart-container" style={{ width: "100%", height: "260px" }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                         <PolarGrid stroke="rgba(255,255,255,0.2)" />
@@ -385,7 +381,7 @@ const ARCHETYPE_IMAGES = {
               </div>
             </div>
 
-            {/* アーキタイプの基礎解説 */}
+            {/* 用語解説 */}
             <div className="glossary-section">
               <h3 className="glossary-title">用語解説</h3>
               <div className="shadow-glossary-card">
@@ -393,8 +389,6 @@ const ARCHETYPE_IMAGES = {
                 <p>生涯を通して変化する、今の自分が演じがちな役割や動機を指します。全部で六通りの結果があります。</p>
               </div>
             </div>
-
-
 
             {/* 防衛機制の基礎解説 */}
             <div className="defense-glossary-section">
@@ -423,7 +417,7 @@ const ARCHETYPE_IMAGES = {
           <div className="deep-analysis-card" style={{ textAlign: "center", padding: "60px 20px" }}>
             <h2 style={{ fontSize: "22px", marginBottom: "16px" }}>まだ深層分析データがありません</h2>
             <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
-              夢分析を行った後、「内省の記録」を **3回分** 蓄積すると<br />
+              夢分析を行った後、「内省の記録」を <strong>3回分</strong> 蓄積すると<br />
               あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。<br />
               （現在: <strong>{pendingCount} / 3</strong> 件蓄積済み）
             </p>
@@ -433,7 +427,7 @@ const ARCHETYPE_IMAGES = {
     );
   }
 
-  // 💡 通常の夢分析画面（初期状態では入力フォームのみ描画）
+  // 通常の夢分析画面
   return (
     <div className="dream-analyzer-container">
       {!showHistoryOnly && (
@@ -457,7 +451,6 @@ const ARCHETYPE_IMAGES = {
       {loading && <div className="loading">深層心理を読み解いています...</div>}
       {result?.error && <div className="error-box">{result.error}</div>}
 
-      {/* 💡 修正：実際に分析テキストやキーワードが存在する時のみ結果カードを描画 */}
       {result && !result.error && (result.summary || result.analysis || result.modelKeys?.length > 0) && (
         <ResultCard 
           item={{ result }} 
