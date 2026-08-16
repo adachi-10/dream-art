@@ -32,7 +32,7 @@
 
 @media (prefers-color-scheme: dark) {
   #root {
-  width: 1700px;      /* 💡 超・弩級の犯人はこれです！ */
+  width: 100%;      /* 💡 超・弩級の犯人はこれです！ */
   max-width: 100%;
   margin: 0 auto;
   text-align: center;

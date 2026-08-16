@@ -1,9 +1,3 @@
-/* ============================================
-   Layout.css
-   担当範囲: 背景・ナビ・タイトル・フッター
-   ============================================ */
-
-/* ---------- リセット & 背景 ---------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -22,28 +16,22 @@ body {
   background-attachment: fixed;
   font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', 'DM Sans', sans-serif;
   color: #3a2a5a;
+  margin: 0;
 }
 
-/* ============================================
-   1. 外側ラッパー .layout
-   ============================================ */
 .layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* align-items: center; ❌ 撤去：これがあるとすべてのブロックが横に縮こまります */
-  width: 100%;           /* 💡 追加：最外枠が画面幅100%であることを確実に保証する */
+  width: 100%;
 }
 
-/* ============================================
-   2. ナビゲーション .nav
-   ============================================ */
 .nav {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px; /* 💡 左右の余白は32px */
+  padding: 16px 20px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -51,7 +39,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-sizing: border-box; /* 追加 */
+  box-sizing: border-box;
 }
 
 .nav__logo {
@@ -59,91 +47,64 @@ body {
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.06em;
-  text-shadow: 0 1px 6px rgba(120, 80, 180, 0.3);
 }
 
 .nav__links {
   list-style: none;
   display: flex;
-  gap: 24px;
+  gap: 16px;
 }
 
-.nav__links a {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: color 0.18s ease, opacity 0.18s ease;
-}
-
-.nav__links a:hover {
+.nav__button {
+  background: none;
+  border: none;
   color: #fff;
-  opacity: 1;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: opacity 0.2s ease;
 }
 
-/* ============================================
-   3. ヒーロー .hero
-   ============================================ */
+.nav__button:hover {
+  opacity: 0.7;
+}
+
 .hero {
   width: 100%;
   text-align: center;
-  padding: 52px 32px 36px; /* 💡 左右パディングをナビと同じ32pxに揃える */
+  padding: 36px 20px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  box-sizing: border-box; /* 追加 */
+  gap: 12px;
+  box-sizing: border-box;
 }
 
 .hero__title {
-  font-size: clamp(26px, 5.5vw, 46px);
+  font-size: clamp(24px, 5vw, 42px);
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.06em;
   line-height: 1.4;
-  text-shadow:
-    0 2px 14px rgba(140, 100, 200, 0.4),
-    0 1px 4px rgba(100, 60, 160, 0.25);
+  text-shadow: 0 2px 14px rgba(140, 100, 200, 0.4);
 }
 
 .hero__sub {
-  font-size: clamp(13px, 2vw, 15px);
-  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(12px, 2vw, 15px);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.75;
   max-width: 420px;
-  letter-spacing: 0.03em;
-  text-shadow: 0 1px 4px rgba(120, 80, 180, 0.2);
 }
 
-/* ============================================
-/* ============================================
-   4. メインコンテンツ .main
-   ============================================ */
-/* ============================================
-   4. メインコンテンツ .main
-   ============================================ */
 .main {
   width: 100%;
   flex: 1;
-  padding: 8px 0px 40px; 
-  display: block; /* 💡 flex から block に変更することで、中のmargin: autoが100%正しく機能し、右ズレを完全に防ぎます */
+  padding: 8px 0 40px;
+  display: block;
   box-sizing: border-box;
 }
 
-
-/* 💡 入力セクション（textareaやボタンがある場所） */
-/* ここはナビの端まで広がると大きすぎるため、個別に最大幅を設定して中央に保ちます */
-.input-section {
-  width: 100%;
-  max-width: 800px; /* 入力欄はすっきりした元のサイズをキープ */
-  margin: 0 auto;
-  padding: 0 32px;  /* 左右に余白を持たせて綺麗に保ちます */
-  box-sizing: border-box;
-}
-
-/* ============================================
-   5. フッター .footer
-   ============================================ */
 .footer {
   width: 100%;
   text-align: center;
@@ -156,52 +117,6 @@ body {
 .footer p {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.65);
-  letter-spacing: 0.04em;
-}
-
-/* Layout.css に追記 */
-
-.nav__links li {
-  list-style: none; /* もしポッチが出ていたら消す */
-}
-
-.nav__button {
-  background: none;        /* 背景色を消す */
-  border: none;            /* 枠線を消す */
-  color: #fff;             /* 文字色を白に（以前のリンクの色に合わせる） */
-  font-family: inherit;    /* フォントを継承 */
-  font-size: 14px;         /* 以前のサイズに合わせる */
-  cursor: pointer;         /* カーソルを指の形に */
-  padding: 0;              /* 余計なパディングを消す */
-  transition: opacity 0.2s ease;
-}
-
-.nav__button:hover {
-  opacity: 0.7;            /* ホバー時に少し薄くする */
-}
-
-/* ============================================
-   6. レスポンシブ
-   ============================================ */
-@media (max-width: 480px) {
-  .nav {
-    padding: 14px 18px;
-  }
-
-  .nav__links {
-    gap: 14px;
-  }
-
-  .hero {
-    padding: 36px 18px 24px;
-  }
-
-  .main {
-    padding: 8px 14px 32px;
-  }
-
-
-
 }
 
 

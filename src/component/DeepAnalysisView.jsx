@@ -21,17 +21,20 @@ export default function DeepAnalysisView() {
   }
 
   if (!latestAnalysis) {
-    return (
-      <div className="deep-analysis-card" style={{ textAlign: "center", padding: "60px 20px" }}>
-        <h2 style={{ fontSize: "22px", marginBottom: "16px" , color: "rgba(255,255,255,0.7)"}}>まだ深層分析データがありません</h2>
-        <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
-          夢分析を行った後、「内省の記録」を３回分蓄積すると<br />
-          あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。<br />
-          （現在: <strong>{pendingCount} / 3</strong> 件蓄積済み）
-        </p>
+  return (
+    <div className="deep-empty-card">
+      <div className="deep-empty-icon">✧</div>
+      <h2 className="deep-empty-title">まだ深層心理分析データがありません</h2>
+      <h3 className="deep-empty-subtitle">
+        夢分析を行った後、「内省の記録」を３回分蓄積すると<br />
+        あなたの「アーキタイプ」と「防衛機制の傾向」がここに分析・出力されます。
+      </h3>
+      <div className="deep-empty-progress">
+        現在：<span className="deep-empty-count">{pendingCount}</span> / 3 件蓄積済み
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const { shadow, shadowDescription, primaryDefense, defenseDescription } = latestAnalysis.result;
 

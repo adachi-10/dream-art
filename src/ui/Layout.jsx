@@ -27,7 +27,8 @@ export default function Layout({ children, onPageChange }) {
       <header className="hero">
         <h1 className="hero__title">Dream Art</h1>
         <p className="hero__sub">
-          夢の断片を言葉にして入力してください。AIがあなたの内側にある感情読み解き、深層心理が3Dアートに変換されます 毎日の夢は履歴に残るので、回数を重ねることで自己内省を深めることができます
+          ～ユングらによる古典心理学で夢から隠れた自分を理解する～<br />
+          夢の内容を入力してください。AIがあなたの内側にある感情を読み解き、深層心理が3Dアートに変換されます。
         </p>
 
         <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "20px" }}>
