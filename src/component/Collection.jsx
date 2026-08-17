@@ -32,7 +32,7 @@ const ALL_MODELS = [
   { key: "社交", video: "/video/social.mp4", audio: "/audio/social.mp3", image: "/images/social.png" },
   { key: "自由", video: "/video/freedom.mp4", audio: "/audio/freedom.mp3", image: "/images/freedom.png" },
   { key: "恐怖", video: "/video/fear.mp4", audio: "/audio/fear.mp3", image: "/images/fear.png" },
-  { key: "孤独", video: "/video/fear.mp4", audio: "/audio/fear.mp3", image: "/images/fear.png" }
+  { key: "孤独", video: "/video/solitute.mp4", audio: "/audio/solitute.mp3", image: "/images/solitute.png" }
 ];
 
 export default function Collection({ unlockedKeys = [] }) {

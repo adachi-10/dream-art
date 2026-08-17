@@ -24,6 +24,10 @@ const MODEL_ASSETS = {
   "恐怖": {
     video: "/video/fear.mp4",
     audio: "/audio/fear.mp3"   
+  },
+  "孤独": {
+    video: "/video/solitute.mp4",
+    audio: "/audio/solitute.mp3"   
   }
 };
 
