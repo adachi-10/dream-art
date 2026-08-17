@@ -29,6 +29,7 @@ export default function Layout({ children, onPageChange }) {
         <p className="hero__sub">
           ～夢から始まる自己分析～<br />
           夢の内容を入力してください。AIがあなたの内側にある感情を読み解き、深層心理が3Dアートに変換されます。
+          （※「夢を分析する」を押すと音が流れます。）
         </p>
 
         <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "20px" }}>
